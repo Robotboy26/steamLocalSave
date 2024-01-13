@@ -1,0 +1,15 @@
+// This is an example of a comment
+// A comment must be on it's own line
+// A comment must start will "//"
+//A space is not needed after a comment but is recommended
+// These are all for linux the save location on windows might be different (it's very annoying)
+// alternate target paths are not supported right now
+// empty line in the file are not recommended right now
+SpaceEngineers|compatdata/244850/pfx/drive_c/users/steamuser/AppData/Roaming/SpaceEngineers|./
+Sheltered|common/Sheltered/saves|./
+Sheltered2|compatdata/1289380/pfx/drive_c/users/steamuser/AppData/LocalLow/Unicube/Sheltered2|./
+ForzaHorizon5|compatdata/1551360/pfx/drive_c/users/steamuser/AppData/Local/ForzaHorizon5|./
+Factorio|~/.factorio|./
+EmpiresOfTheUndergrowth|compatdata/463530/pfx/drive_c/users/steamuser/AppData/Local/EotU/Saved/SaveGames|./
+
+

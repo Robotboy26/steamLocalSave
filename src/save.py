@@ -1,27 +1,94 @@
 import sys
 import os
 import shutil
+import time
+import argparse
+import zipfile
+import platform
+import concurrent.futures
+import pdb
 
 def log(message):
     print(message)
 
-def saveFiles(SteamLibrary, LocalLibrary):
-    if not os.path.exists("../SavePathDataset.txt"):
-        quit("Data path does not exist")
-    SavePaths = open("../SavePathDataset.txt", 'r').read().splitlines()
+def timeFormat():
+    currentTime = time.time()
+    formattedTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(currentTime))
+    return formattedTime
+
+def generatePaths(SteamLibrary, gameName, savePath, backupPath):
+    if not "~" in savePath:
+        src = os.path.normpath(f"{SteamLibrary}/{savePath}")
+    else:
+        src = os.path.normpath(f"{savePath}")
+        src = os.path.expanduser(src)
+
+    targ = os.path.normpath(f"{LocalLibrary}{gameName}/{timeFormat()}/{backupPath}")
+    return src, targ
+
+def performCopy(src, targ, gameName, dryRun=False):
+    if dryRun == False:
+        shutil.copytree(src, targ)
+        zipPath = targ
+        shutil.make_archive(zipPath, 'zip', targ)
+        log(f"Creating zip archive of '{gameName}'")
+        shutil.rmtree(targ)
+
+def saveGame(SteamLibrary, LocalLibrary, maxBackups, path):
+    try:
+        gameName, savePath, backupPath = path.split("|")
+    except ValueError:
+        return
+
+    log(f"Saving files for '{gameName}'")
+    # log(f"Still need to save {numberOfGamesToSave - SavePaths.index(path) - 1} games data")
+
+    src, targ = generatePaths(SteamLibrary, gameName, savePath, backupPath)
+    if not os.path.exists(f"{src}"):
+        log(f"You do not appear to have the game '{gameName}'")
+        return
+
+    if not os.path.exists(f"{LocalLibrary}{gameName}"): # is save path does not exist
+        # this is here because you get things like <folder>/../../<folder> and this errors
+        performCopy(src, targ, gameName)
+    else:
+        zipFiles = [f for f in os.listdir(f"{LocalLibrary}{gameName}") if f.endswith(".zip")]
+        zipFiles = sorted(zipFiles)
+        log(f"You have {len(zipFiles)} backups for game: '{gameName}'")
+
+        if len(zipFiles) > maxBackups:
+            log(f"More than {maxBackups} backups for game '{gameName}'. Removing the oldest: {zipFiles[-1]}")
+            oldestBackup = os.path.join(f"{LocalLibrary}{gameName}", zipFiles[-1])
+            os.remove(oldestBackup)
+
+    performCopy(src, targ, gameName)
+    log(f"Saved data for {gameName}")
+    return
+
+def saveGames(SteamLibrary, LocalLibrary, maxBackups):
+    if not os.path.exists("../SavePathDatasetLinux.txt"):
+        quit("You do not have any datasets.")
+    if platform.system() == "Linux":
+        readlines = open("../SavePathDatasetLinux.txt", 'r').read().splitlines()
+    else:
+        quit("you only have the database for Linux.")
+    SavePaths = []
+    for path in readlines:
+        if not path.startswith("//") or not path == "":
+            SavePaths.append(path)
     numberOfGamesToSave = len(SavePaths)
-    print(f"The save data of {numberOfGamesToSave} games.")
-    for path in SavePaths:
-        gameName, savePath = path.split("|")
+    log(f"The save data of {numberOfGamesToSave} games.")
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(saveGame, SteamLibrary, LocalLibrary, maxBackups, path) for path in SavePaths]
 
-        log(f"saveing the data for {gameName}")
-        log(f"Still need to save {numberOfGamesToSave - len(SavePaths[SavePaths.index(path)])} games data")
-
-        shutil.copytree(f"{SteamLibrary}{savePath}", f"{LocalLibrary}{savePath}")
+def pushFiles():
+    pass
 
 if __name__ == "__main__":
     # example SteamLibrary path /media/<user>/<drive>/SteamLibrary/
+    # add argParser with required SteamLibrary path but other optional
     SteamLibrary = None
+    maxBackups = 5 # default
     print(len(sys.argv))
     if len(sys.argv) > 1:
         SteamLibrary = sys.argv[1]
@@ -29,7 +96,7 @@ if __name__ == "__main__":
         quit("Please provide SteamLibrary path")
 
     # append stuff to the SteamLibrary path to get to the games
-    SteamLibrary = f"{SteamLibrary}steamapps/common/"
+    SteamLibrary = f"{SteamLibrary}steamapps/"
 
     LocalLibrary = None
     if len(sys.argv) > 2:
@@ -43,4 +110,4 @@ if __name__ == "__main__":
     if not os.path.exists(LocalLibrary):
         os.mkdir(LocalLibrary)
 
-    saveFiles(SteamLibrary, LocalLibrary)
+    saveGames(SteamLibrary, LocalLibrary, maxBackups)
