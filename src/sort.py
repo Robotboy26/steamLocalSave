@@ -11,7 +11,7 @@ def main():
             SavePaths.append(path)
     numberOfGamesToSave = len(SavePaths)
     print(f"Sorting {numberOfGamesToSave} games.")
-    SavePaths = sorted(SavePaths, reverse=True)
+    SavePaths = sorted(SavePaths)
     sortedIndex = 0
     for x in range(len(readlines)):
         if not readlines[x].startswith("//"):
