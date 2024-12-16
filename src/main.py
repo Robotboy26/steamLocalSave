@@ -5,7 +5,7 @@ import time
 import argparse
 import zipfile
 import platform
-import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import pdb
 
 debugMode = False
@@ -31,9 +31,10 @@ def generatePaths(steamLibrary, localLibrary, gameName, savePath):
     targ = os.path.normpath(f"{localLibrary}{gameName}/{timeFormat()}/{gameName}")
     return src, targ
 
+# TODO add support for dry runs
 def performCopy(src, targ, gameName, dryRun=False):
     if dryRun == False:
-        log(f"Saving files for '{gameName}'")
+        print(f"Saving game files for '{gameName}'")
         shutil.copytree(src, targ)
         zipPath = targ
         log(f"ZipPath: {zipPath}")
@@ -47,7 +48,7 @@ def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
         gameName, savePath = path.split("|")
     except ValueError:
         log("Value Error")
-        quit("Value Error")
+        return ValueError
 
     if option == None:
         quit("Please select save or restore")
@@ -68,20 +69,23 @@ def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
     log(f"option: {option}")
     if option.lower() == "save":
         if os.path.exists(f"{localLibrary}{gameName}"): # Check the path exists. No need to remove backups if there are none
+            performCopy(src, targ, gameName)
             zipFiles = [f for f in os.listdir(f"{localLibrary}{gameName}") if f.endswith("auto")]
-            zipFiles = sorted(zipFiles)
+            zipFiles = sorted(zipFiles, reverse=True)
             log(f"You have {len(zipFiles)} backups for game: '{gameName}'")
 
             while len(zipFiles) > maxBackups: # While loop because if you lower the amount of backups that you want saved you want all the old ones deleted
+                log(f"zipFiles {zipFiles}. Bool: {len(zipFiles) > maxBackups}")
                 log(f"More than {maxBackups} backups for game '{gameName}'. Removing the oldest: {zipFiles[-1]}")
                 oldestBackup = os.path.join(f"{localLibrary}{gameName}", zipFiles[-1])
-                os.remove(oldestBackup)
-        performCopy(src, targ, gameName)
+                shutil.rmtree(oldestBackup)
+                zipFiles.pop() # If you deleted to oldest aready you have to remove the oldest from the list
         log(f"Saved data for {gameName}")
+        return True
     if option.lower() == "restore":
         quit("Not yet implimented") # TODO
 
-    return
+    return None
 
 def saveGames(steamLibrary, localLibrary, maxBackups, option):
     log(platform.system())
@@ -94,6 +98,7 @@ def saveGames(steamLibrary, localLibrary, maxBackups, option):
         quit(f"You do not have any datasets for platform: {platform.system()}")
     savePaths = []
     for path in readlines:
+        # TODO change comment to use '#'
         if "**" in path and not path.startswith("**"):
             path = path.split("**") # This is for end of the line comments
             path = path[0]
@@ -101,12 +106,23 @@ def saveGames(steamLibrary, localLibrary, maxBackups, option):
             savePaths.append(path)
     numberOfGamesToSave = len(savePaths)
     log(f"Searching {numberOfGamesToSave} game save data locations.")
-    if not debugMode:
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(saveGame, steamLibrary, localLibrary, maxBackups, option, path) for path in savePaths]
-    else:
+    if debugMode == True:
         for path in savePaths:
             saveGame(steamLibrary, localLibrary, maxBackups, option, path)
+    else:
+        with ThreadPoolExecutor() as executor:
+            futures = {
+                    executor.submit(saveGame, steamLibrary, localLibrary, maxBackups, option, path): path for path in savePaths
+                    }
+
+        for future in as_completed(futures):
+            path = futures[future]
+            try:
+                result = future.result()  # This retrieves the result of the call
+                if result:
+                    print(f"Successfully saved game for path: {path}.")
+            except Exception as e:
+                print(f"Error occurred while saving game for path: {path}. Exception: {e}")
 
 def pushFiles():
     pass
@@ -123,13 +139,14 @@ if __name__ == "__main__":
     # example steamLibrary path /media/<user>/<drive>/steamLibrary/
     # add argParser with required steamLibrary path but other optional
     steamLibrary = None
-    print(args)
+
 
     if args.debug:
         debugMode = True
+        log(args)
 
     if args.backups == None:
-        args.backups = 2 # default
+        args.backups = 3 # default
     if args.localLibrary == None:
         args.localLibrary = "../SteamSaveLocal/"
 
@@ -142,5 +159,7 @@ if __name__ == "__main__":
 
     if args.restore:
         option = "restore"
+
+    log(args)
 
     saveGames(args.steamLibraryPath, args.localLibrary, args.backups, option)
