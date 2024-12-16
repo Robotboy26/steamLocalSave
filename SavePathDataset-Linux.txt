@@ -7,147 +7,147 @@
 ** status. I will put Gold at the end of a line if it works on my computer
 ** status. I will put Wrong at the end of the line if I think that the save location is wrong (This is not a sure thing)
 **A space is not needed after a comment but is recommended
-ARK: Survival Evolved|compatdata/346110/pfx/drive_c/users/steamuser/Local Settings/Application Data/ARK/Saved|./ ** Clear
-Age of Empires II: Definitive Edition|compatdata/813780/pfx/drive_c/users/steamuser/My Documents/My Games/Age of Empires 2 DE|./ ** Clear
-Bad North|~/.steam/debian-installation/userdata/326213651/688420/remote|./ ** Gold
-Banished|compatdata/242920/pfx/drive_c/users/steamuser/Documents/Banished/Save|./ ** Gold
-Borderlands 2|compatdata/49520/pfx/drive_c/users/steamuser/My Documents/My Games/Borderlands 2/WillowGame/SaveData|./ ** Clear
-Cities: Skylines|~/.local/share/Colossal Order/Cities_Skylines/Saves|./ ** Clear
-Counter-Strike: Global Offensive|compatdata/730/pfx/drive_c/users/steamuser/My Documents/My Games/Counter-Strike Global Offensive/|./ ** Clear
-Crusader Kings III|~/.local/share/Paradox Interactive/Crusader Kings III/save games|./ ** Clear
-Crusader Kings II|compatdata/203770/pfx/drive_c/users/steamuser/My Documents/Paradox Interactive/Crusader Kings II/|./ ** Clear
-DOOM|compatdata/379720/pfx/drive_c/users/steamuser/Saved Games id Software/DOOM/base/savegame|./ ** Clear
-Dead by Daylight|compatdata/381210/pfx/drive_c/users/steamuser/Local Settings/Application Data/DeadByDaylight/Saved|./ ** Clear
-Destiny 2|compatdata/1085660/pfx/drive_c/users/steamuser/Local Settings/Application Data/Bungie/DestinyPC/save|./ ** Clear
-Dig Or Die|compatdata/315460/pfx/drive_c/users/steamuser/Documents/Dig or Die|./ ** Gold
-Dota 2|compatdata/570/pfx/drive_c/users/steamuser/My Documents/My Games/Dota 2/|./ ** Clear
-Empires Of The Undergrowth|compatdata/463530/pfx/drive_c/users/steamuser/AppData/Local/EotU/Saved/SaveGames|./ ** Gold
-Euro Truck Simulator 2|~/.local/share/Euro Truck Simulator 2/profiles|./ ** Clear
-Europa Universalis IV|~/.local/share/Paradox Interactive/Europa Universalis IV/save games|./ ** Clear
-FTL: Faster Than Light|~/.local/share/FasterThanLight|./ ** Gold
-Factorio|~/.factorio|./ ** Gold
-Fall Guys|~/.config/FallGuys_client|./ ** Clear
-Fallout 4|compatdata/377160/pfx/drive_c/users/steamuser/My Documents/My Games/Fallout4/Saves|./ ** Clear
-Fallout: New Vegas|compatdata/22380/pfx/drive_c/users/steamuser/My Documents/My Games/FalloutNV/Saves|./ ** Clear
-FortressCraft Evolved|~/.config/unity3d/ProjectorGames/FortressCraft/Worlds|./ ** Gold
-Forza Horizon 5|compatdata/1551360/pfx/drive_c/users/steamuser/AppData/Local/ForzaHorizon5|./ ** Gold
-Garry's Mod|compatdata/4000/pfx/drive_c/users/steamuser/My Documents/|./ ** Clear
-Grand Theft Auto V|compatdata/271590/pfx/drive_c/users/steamuser/My Documents/Rockstar Games/GTA V/Profiles|./ ** Clear
-Hades|common/Hades/SaveGames|./ ** Clear
-Half-Life|compatdata/70/pfx/drive_c/users/steamuser/My Documents/|./ ** Clear
-Kerbal Space Program|~/.local/share/Steam/steamapps/common/Kerbal Space Program/save|./ ** Wrong
-Killing Floor 2|compatdata/232090/pfx/drive_c/users/steamuser/My Documents/My Games/KillingFloor2/|./ ** Clear
-Left 4 Dead 2|compatdata/550/pfx/drive_c/users/steamuser/My Documents/My Games/Left 4 Dead 2/|./ ** Clear
-Middle-earth: Shadow of War|compatdata/356190/pfx/drive_c/users/steamuser/Local Settings/Application Data/Monolith Productions/Shadow of War/Saved|./ ** Clear
-Monster Hunter World: Iceborne|common/Monster Hunter World/Savedata|./ ** Clear
-Monster Hunter: World|compatdata/582010/pfx/drive_c/users/steamuser/My Documents/My Games/Monster Hunter World/|./ ** Clear
-No Man's Sky|compatdata/275850/pfx/drive_c/users/steamuser/AppData/Roaming/HelloGames|./ ** Clear
-PAYDAY 2|compatdata/218620/pfx/drive_c/users/steamuser/My Documents/My Games/PAYDAY 2|./ ** Clear
-Paladins|compatdata/444090/pfx/drive_c/users/steamuser/My Documents/My Games/paladinslive/Saves|./ ** Clear
-Path of Exile|compatdata/238960/pfx/drive_c/users/steamuser/My Documents/My Games/Path of Exile|./ ** Clear
-Planet Zoo|compatdata/703080/pfx/drive_c/users/steamuser/Local Settings/Application Data/Frontier Developments/Planet Zoo/|./ ** Clear
-PlayerUnknown's Battlegrounds|~/.local/share/TslGame/Saved/SaveGames|./ ** Clear
-Prison Architect|~/.Prison Architect/saves|./  ** Gold
-RimWorld Royalty|~/.local/share/RimWorld/Addons/Royalty/SaveFiles|./ ** Clear
-RimWorld|~/.local/share/RimWorld|./ ** Clear
-Rocket League|~/.local/share/Rocket League/TAGame/SaveData|./ ** Clear
-Rust|compatdata/252490/pfx/drive_c/users/steamuser/Local Settings/Application Data/Rust|./ ** Clear
-SMITE|compatdata/386360/pfx/drive_c/users/steamuser/Local Settings/Application Data/Hi-Rez Studios/HiRezGames/smite/Saved|./ ** Clear
-Sheltered2|compatdata/1289380/pfx/drive_c/users/steamuser/AppData/LocalLow/Unicube/Sheltered2|./ ** Gold
-Sheltered|common/Sheltered/saves|./ ** Gold
-Sid Meier's Civilization V|~/.local/share/Aspyr/Sid Meier's Civilization 5/Saves|./ ** Clear
-Space Engineers|compatdata/244850/pfx/drive_c/users/steamuser/AppData/Roaming/SpaceEngineers|./ ** Gold
-Starbound|compatdata/211820/pfx/drive_c/users/steamuser/My Documents/My Games/Starbound/storage|./ ** Clear
-Stardew Valley|~/.config/StardewValley/Saves|./ ** Gold
-Stonehearth|common/Stonehearth/saved_games|./ ** Gold
-Subnautica|~/.config/unity3d/Unknown Worlds Entertainment/Subnautica/|./ ** Clear
-Team Fortress 2|compatdata/440/pfx/drive_c/users/steamuser/My Documents/My Games/Team Fortress 2|./ ** Clear
-Teamfight Tactics|compatdata/1091500/pfx/drive_c/users/steamuser/Local Settings/Application Data/Riot Games/TeamfightTactics/Saved/SaveGames|./ ** Clear
-Terraria|~/.local/share/Terraria|./ ** Clear
-The Binding of Isaac: Rebirth|~/.local/share/binding of isaac rebirth|./ ** Clear
-The Elder Scrolls IV: Oblivion|compatdata/22330/pfx/drive_c/users/steamuser/My Documents/My Games/Oblivion/Saves|./ ** Clear
-The Elder Scrolls V: Skyrim|compatdata/72850/pfx/drive_c/users/steamuser/My Documents/My Games/Skyrim/Saves|./ ** Clear
-The Forest|~/.config/unity3d/Endnight Games/TheForest|./ ** Clear
-The Witcher 3: Wild Hunt|compatdata/292030/pfx/drive_c/users/steamuser/My Documents/The Witcher 3/gamesaves|./ ** Clear
-Undertale|compatdata/391540/pfx/drive_c/users/steamuser/Local Settings/Application Data/UNDERTALE|./ ** Clear
-Unturned|~/.config/unity3d/Smartly Dressed Games/Unturned|./ ** Gold
-War Thunder|~/.local/share/WarThunder|./ ** Clear
-Warframe|~/.winedrive_c/users/steamuser/My Documents/Warframe|./ ** Clear
-XCOM 2|compatdata/268500/pfx/drive_c/users/steamuser/My Documents/My Games/XCOM2/XComGame|./ ** Clear
-Airships Conquer the Skies|~/.local/share/Airships Conquer the Skies/|./ ** Wrong
-Anno 1800|compatdata/916440/pfx/drive_c/users/steamuser/AppData/Local/Ubisoft Game Launcher|./ ** Gold
-Another Brick in the Mall|compatdata/521150/pfx/drive_c/users/steamuser/AppData/Local/Another Brick in the Mall|./ ** Gold
-ASTRONEER|compatdata/361420/pfx/drive_c/users/steamuser/AppData/Local/Astro/Saved|./ ** Gold
-Autonauts|compatdata/979120/pfx/drive_c/users/steamuser/AppData/LocalLow/Denki Ltd/Autonauts/Saves|./ Gold
-Beat Saber|~/.config/unity3d/Hyperbolic Magnetism/Beat Saber/|./ ** Clear
-Bomber Crew|~/.config/unity3d/Runner Duck/Bomber Crew|./ ** Gold
-Castle Story|~/.config/unity3d/Sauropod Studio/Castle Story/|./ ** Gold
-ClusterTruck|~/.config/unity3d/Landfall/Clustertruck/|./ ** Clear
-Colony Survival|~/.colony/|./ ** Clear
-Cosmoteer|~/.local/share/Cosmoteer/|./ ** Clear
-Dead Cells|~/.config/deadcells/|./ ** Clear
-Defcon|~/.config/introversion/defcon/|./ ** Clear
-Door Kickers Action Squad|compatdata/686200/pfx/drive_c/users/steamuser/AppData/Local/KillHouseGames/ActionSquad|./ ** Gold
-Dungreed|~/.config/unity3d/TEAM-HORAY/Dungreed/|./
-Empires of the Undergrowth|~/.config/unity3d/Slug Disco Studios/Empires of the Undergrowth/|./
-Enter the Gungeon|~/.config/unity3d/Dodge Roll/Enter the Gungeon/|./
-Epistory|~/.config/unity3d/Fishing Cactus/Epistory/|./
-Factorio|~/.factorio/|./
-Forager|~/.config/unity3d/HopFrog/Forager/|./
-Frog Climbers|~/.config/unity3d/TeamCrew/Frog Climbers/|./
-From The Depths|~/.local/share/From_The_Depths/|./
-Graveyard Keeper|~/.config/unity3d/Lazy Bear Games/Graveyard Keeper/|./
-Into the Breach|~/.config/unity3d/Subset Games/Into the Breach/|./
-JYDGE|~/.config/unity3d/10tons/JYDGE/|./
-Kerbal Space Program|~/.steam/steam/SteamApps/kerbal space program/|./
-Kingdoms and Castles|~/.config/unity3d/Lion Shield/Kingdoms and Castles/|./
-Kingdom Two Crowns|~/.config/unity3d/Raw Fury/Kingdom Two Crowns/|./
-Mars Horizon|~/.config/unity3d/Auroch Digital/Mars Horizon/|./
-Metro Exodus|~/.local/share/4A Games/Metro Exodus/|./
-MewnBase|~/.config/mewnbase/|./
-MicrosoftFlightSimulator|~/.steam/steam/steamapps/compatdata/1250410/pfx/drive_c/users/steamuser/AppData/LocalLow/Microsoft Studios/|./
-Mindustry|~/.local/share/Mindustry/|./
-MiniMetro|~/.local/share/steam/steamapps/compatdata/287980/pfx/drive_c/users/steamuser/Local Settings/Application Data/|./
-Mini Motorways|~/.config/unity3d/Dinosaur Polo Club/Mini Motorways/|./
-Muck|~/.config/unity3d/Daniel Stefansson/Muck/|./
-My Little Blacksmith Shop|~/.config/unity3d/Micheal Flad/My Little Blacksmith Shop/|./
-One Hour One Life|~/.config/OneLife/|./
-OxygenNotIncluded|~/.config/unity3d/Klei/Oxygen Not Included/|./
-Pixel Piracy|~/.config/unity3d/Vitali Kirpu/Pixel Piracy/|./
-Planetbase|~/.config/unity3d/Madruga Works/Planetbase/|./
-Poly Bridge|~/.config/unity3d/Dry Cactus/Poly Bridge/|./
-Prison Architect|~/.Prison Architect/|./
-Project Highrise|~/.config/unity3d/Kasedo Games/Project Highrise/|./
-Ravenfield|~/.config/Ravenfield/|./
-Rise of Liberty|~/.config/unity3d/Rise of Liberty/|./
-Risk of Rain 2|~/.config/unity3d/Hopoo Games/Risk of Rain 2/|./
-Rust|~/.steam/steam/steamapps/common/Rust/|./
-shapez.io|~/.config/unity3d/DJNumbers/shapez.io/|./
-Sheltered|~/.local/share/Bomb Shelter Games/Sheltered/|./
-Shieldwall|~/.config/unity3d/Setherial/Shieldwall/|./
-SimAirport|~/.config/unity3d/LVGameDevLLC/SimAirport/|./
-SimpleRockets2|~/.config/unity3d/Jundroo/SimpleRockets 2/|./
-SlayTheSpire|~/.config/unity3d/Mega Crit/Slay the Spire/|./
-Sol 0 Mars Colonization|~/.config/unity3d/Chondrite Games/Sol 0 Mars Colonization/|./
-SpaceEngineers|~/.config/SpaceEngineers/|./
-Starbound|~/.local/share/Steam/steamapps/compatdata/211820/pfx/drive_c/users/steamuser/My Documents/My Games/Starbound/|./
-Startup Company|~/.local/share/Startup Company/|./
-Stationeers|~/.config/unity3d/RocketWerkz/Stationeers/|./
-Stonehearth|~/.local/share/Stonehearth/|./
-Stranded Deep|~/.config/unity3d/Beam Team Games/Stranded Deep/|./
-Subnautica|~/.config/unity3d/Unknown Worlds/Subnautica/SubnauticaSavedGames/|./
-SubnauticaZero|~/.config/unity3d/Unknown Worlds/Subnautica Zero/SubnauticaSavedGames/|./
-Surviving Mars|~/.local/share/Paradox Interactive/Surviving Mars/|./
-Terraria|~/.local/share/Terraria/|./
-TerraTech|~/.config/unity3d/Payload Studios/TerraTech/|./
-Timberborn|~/.config/unity3d/Mechanistry/Timberborn/|./
-TIS-100|~/.config/unity3d/Zachtronics Industries/TIS-100/|./
-Totally Accurate Battle Simulator|~/.config/unity3d/Landfall/Totally Accurate Battle Simulator/|./
-Total Tank Simulator|~/.config/unity3d/Noobz from Poland/Total Tank Simulator/|./
-TrackMania Nations Forever|~/.local/share/TrackMania/Skins/Stadium/Mod/|./
-Trailmakers|~/.config/unity3d/FlashbulbGames/Trailmakers/|./
-Turmoil|~/.config/Turmoil/|./
-Ultimate Epic Battle Simulator|~/.config/unity3d/Brilliant Game Studios/Ultimate Epic Battle Simulator/|./
-UnderMine|~/.config/unity3d/Thorium/UnderMine/|./
-Unturned|~/.config/unity3d/Smartly Dressed Games/Unturned/|./
-worldbox|~/.config/worldbox/|./
+ARK: Survival Evolved|compatdata/346110/pfx/drive_c/users/steamuser/Local Settings/Application Data/ARK/Saved ** Clear
+ASTRONEER|compatdata/361420/pfx/drive_c/users/steamuser/AppData/Local/Astro/Saved ** Gold
+Age of Empires II: Definitive Edition|compatdata/813780/pfx/drive_c/users/steamuser/My Documents/My Games/Age of Empires 2 DE ** Clear
+Airships Conquer the Skies|~/.local/share/Airships Conquer the Skies ** Wrong
+Anno 1800|compatdata/916440/pfx/drive_c/users/steamuser/AppData/Local/Ubisoft Game Launcher ** Gold
+Another Brick in the Mall|compatdata/521150/pfx/drive_c/users/steamuser/AppData/Local/Another Brick in the Mall ** Gold
+Autonauts|compatdata/979120/pfx/drive_c/users/steamuser/AppData/LocalLow/Denki Ltd/Autonauts/Saves Gold
+Bad North|~/.steam/debian-installation/userdata/326213651/688420/remote ** Gold
+Banished|compatdata/242920/pfx/drive_c/users/steamuser/Documents/Banished/Save ** Gold
+Beat Saber|~/.config/unity3d/Hyperbolic Magnetism/Beat Saber ** Clear
+Bomber Crew|~/.config/unity3d/Runner Duck/Bomber Crew ** Gold
+Borderlands 2|compatdata/49520/pfx/drive_c/users/steamuser/My Documents/My Games/Borderlands 2/WillowGame/SaveData ** Clear
+Castle Story|~/.config/unity3d/Sauropod Studio/Castle Story ** Gold
+Cities: Skylines|~/.local/share/Colossal Order/Cities_Skylines/Saves ** Clear
+ClusterTruck|~/.config/unity3d/Landfall/Clustertruck ** Clear
+Colony Survival|~/.colony ** Clear
+Cosmoteer|~/.local/share/Cosmoteer ** Clear
+Counter-Strike: Global Offensive|compatdata/730/pfx/drive_c/users/steamuser/My Documents/My Games/Counter-Strike Global Offensive ** Clear
+Crusader Kings III|~/.local/share/Paradox Interactive/Crusader Kings III/save games ** Clear
+Crusader Kings II|compatdata/203770/pfx/drive_c/users/steamuser/My Documents/Paradox Interactive/Crusader Kings II ** Clear
+DOOM|compatdata/379720/pfx/drive_c/users/steamuser/Saved Games id Software/DOOM/base/savegame ** Clear
+Dead Cells|~/.config/deadcells ** Clear
+Dead by Daylight|compatdata/381210/pfx/drive_c/users/steamuser/Local Settings/Application Data/DeadByDaylight/Saved ** Clear
+Defcon|~/.config/introversion/defcon ** Clear
+Destiny 2|compatdata/1085660/pfx/drive_c/users/steamuser/Local Settings/Application Data/Bungie/DestinyPC/save ** Clear
+Dig Or Die|compatdata/315460/pfx/drive_c/users/steamuser/Documents/Dig or Die ** Gold
+Door Kickers Action Squad|compatdata/686200/pfx/drive_c/users/steamuser/AppData/Local/KillHouseGames/ActionSquad ** Gold
+Dota 2|compatdata/570/pfx/drive_c/users/steamuser/My Documents/My Games/Dota 2 ** Clear
+Dungreed|~/.config/unity3d/TEAM-HORAY/Dungreed/
+Empires Of The Undergrowth|compatdata/463530/pfx/drive_c/users/steamuser/AppData/Local/EotU/Saved/SaveGames ** Gold
+Empires of the Undergrowth|~/.config/unity3d/Slug Disco Studios/Empires of the Undergrowth/
+Enter the Gungeon|~/.config/unity3d/Dodge Roll/Enter the Gungeon/
+Epistory|~/.config/unity3d/Fishing Cactus/Epistory/
+Euro Truck Simulator 2|~/.local/share/Euro Truck Simulator 2/profiles ** Clear
+Europa Universalis IV|~/.local/share/Paradox Interactive/Europa Universalis IV/save games ** Clear
+FTL: Faster Than Light|~/.local/share/FasterThanLight ** Gold
+Factorio|~/.factorio ** Gold
+Factorio|~/.factorio/
+Fall Guys|~/.config/FallGuys_client ** Clear
+Fallout 4|compatdata/377160/pfx/drive_c/users/steamuser/My Documents/My Games/Fallout4/Saves ** Clear
+Fallout: New Vegas|compatdata/22380/pfx/drive_c/users/steamuser/My Documents/My Games/FalloutNV/Saves ** Clear
+Forager|~/.config/unity3d/HopFrog/Forager/
+FortressCraft Evolved|~/.config/unity3d/ProjectorGames/FortressCraft/Worlds ** Gold
+Forza Horizon 5|compatdata/1551360/pfx/drive_c/users/steamuser/AppData/Local/ForzaHorizon5 ** Gold
+Frog Climbers|~/.config/unity3d/TeamCrew/Frog Climbers/
+From The Depths|~/.local/share/From_The_Depths/
+Garry's Mod|compatdata/4000/pfx/drive_c/users/steamuser/My Documents/ ** Clear
+Grand Theft Auto V|compatdata/271590/pfx/drive_c/users/steamuser/My Documents/Rockstar Games/GTA V/Profiles ** Clear
+Graveyard Keeper|~/.config/unity3d/Lazy Bear Games/Graveyard Keeper/
+Hades|common/Hades/SaveGames ** Wrong
+Half-Life|compatdata/70/pfx/drive_c/users/steamuser/My Documents/ ** Clear
+Into the Breach|~/.config/unity3d/Subset Games/Into the Breach/
+JYDGE|~/.config/unity3d/10tons/JYDGE/
+Kerbal Space Program|~/.local/share/Steam/steamapps/common/Kerbal Space Program/save ** Wrong
+Kerbal Space Program|~/.steam/steam/SteamApps/kerbal space program/
+Killing Floor 2|compatdata/232090/pfx/drive_c/users/steamuser/My Documents/My Games/KillingFloor2/ ** Clear
+Kingdom Two Crowns|~/.config/unity3d/Raw Fury/Kingdom Two Crowns/
+Kingdoms and Castles|~/.config/unity3d/Lion Shield/Kingdoms and Castles/
+Left 4 Dead 2|compatdata/550/pfx/drive_c/users/steamuser/My Documents/My Games/Left 4 Dead 2/ ** Clear
+Mars Horizon|~/.config/unity3d/Auroch Digital/Mars Horizon/
+Metro Exodus|~/.local/share/4A Games/Metro Exodus/
+MewnBase|~/.config/mewnbase/
+MicrosoftFlightSimulator|~/.steam/steam/steamapps/compatdata/1250410/pfx/drive_c/users/steamuser/AppData/LocalLow/Microsoft Studios/
+Middle-earth: Shadow of War|compatdata/356190/pfx/drive_c/users/steamuser/Local Settings/Application Data/Monolith Productions/Shadow of War/Saved ** Clear
+Mindustry|~/.local/share/Mindustry/
+Mini Motorways|~/.config/unity3d/Dinosaur Polo Club/Mini Motorways/
+MiniMetro|~/.local/share/steam/steamapps/compatdata/287980/pfx/drive_c/users/steamuser/Local Settings/Application Data/
+Monster Hunter World: Iceborne|common/Monster Hunter World/Savedata ** Clear
+Monster Hunter: World|compatdata/582010/pfx/drive_c/users/steamuser/My Documents/My Games/Monster Hunter World/ ** Clear
+Muck|~/.config/unity3d/Daniel Stefansson/Muck/
+My Little Blacksmith Shop|~/.config/unity3d/Micheal Flad/My Little Blacksmith Shop/
+No Man's Sky|compatdata/275850/pfx/drive_c/users/steamuser/AppData/Roaming/HelloGames ** Clear
+One Hour One Life|~/.config/OneLife/
+OxygenNotIncluded|~/.config/unity3d/Klei/Oxygen Not Included/
+PAYDAY 2|compatdata/218620/pfx/drive_c/users/steamuser/My Documents/My Games/PAYDAY 2 ** Clear
+Paladins|compatdata/444090/pfx/drive_c/users/steamuser/My Documents/My Games/paladinslive/Saves ** Clear
+Path of Exile|compatdata/238960/pfx/drive_c/users/steamuser/My Documents/My Games/Path of Exile ** Clear
+Pixel Piracy|~/.config/unity3d/Vitali Kirpu/Pixel Piracy/
+Planet Zoo|compatdata/703080/pfx/drive_c/users/steamuser/Local Settings/Application Data/Frontier Developments/Planet Zoo/ ** Clear
+Planetbase|~/.config/unity3d/Madruga Works/Planetbase/
+PlayerUnknown's Battlegrounds|~/.local/share/TslGame/Saved/SaveGames ** Clear
+Poly Bridge|~/.config/unity3d/Dry Cactus/Poly Bridge/
+Prison Architect|~/.Prison Architect/
+Prison Architect|~/.Prison Architect/saves  ** Gold
+Project Highrise|~/.config/unity3d/Kasedo Games/Project Highrise/
+Ravenfield|~/.config/Ravenfield/
+RimWorld Royalty|~/.local/share/RimWorld/Addons/Royalty/SaveFiles ** Clear
+RimWorld|~/.local/share/RimWorld ** Clear
+Rise of Liberty|~/.config/unity3d/Rise of Liberty/
+Risk of Rain 2|~/.config/unity3d/Hopoo Games/Risk of Rain 2/
+Rocket League|~/.local/share/Rocket League/TAGame/SaveData ** Clear
+Rust|compatdata/252490/pfx/drive_c/users/steamuser/Local Settings/Application Data/Rust ** Clear
+Rust|~/.steam/steam/steamapps/common/Rust/
+SMITE|compatdata/386360/pfx/drive_c/users/steamuser/Local Settings/Application Data/Hi-Rez Studios/HiRezGames/smite/Saved ** Clear
+Shapez.io|~/.config/unity3d/DJNumbers/shapez.io/
+Sheltered2|compatdata/1289380/pfx/drive_c/users/steamuser/AppData/LocalLow/Unicube/Sheltered2 ** Gold
+Sheltered|common/Sheltered/saves ** Gold
+Sheltered|~/.local/share/Bomb Shelter Games/Sheltered/
+Shieldwall|~/.config/unity3d/Setherial/Shieldwall/
+Sid Meier's Civilization V|~/.local/share/Aspyr/Sid Meier's Civilization 5/Saves ** Clear
+SimAirport|~/.config/unity3d/LVGameDevLLC/SimAirport/
+SimpleRockets2|~/.config/unity3d/Jundroo/SimpleRockets 2/
+SlayTheSpire|~/.config/unity3d/Mega Crit/Slay the Spire/
+Sol 0 Mars Colonization|~/.config/unity3d/Chondrite Games/Sol 0 Mars Colonization/
+Space Engineers|compatdata/244850/pfx/drive_c/users/steamuser/AppData/Roaming/SpaceEngineers ** Gold
+SpaceEngineers|~/.config/SpaceEngineers/
+Starbound|compatdata/211820/pfx/drive_c/users/steamuser/My Documents/My Games/Starbound/storage ** Clear
+Starbound|~/.local/share/Steam/steamapps/compatdata/211820/pfx/drive_c/users/steamuser/My Documents/My Games/Starbound/
+Stardew Valley|~/.config/StardewValley/Saves ** Gold
+Startup Company|~/.local/share/Startup Company/
+Stationeers|~/.config/unity3d/RocketWerkz/Stationeers/
+Stonehearth|common/Stonehearth/saved_games ** Gold
+Stonehearth|~/.local/share/Stonehearth/
+Stranded Deep|~/.config/unity3d/Beam Team Games/Stranded Deep/
+SubnauticaZero|~/.config/unity3d/Unknown Worlds/Subnautica Zero/SubnauticaSavedGames/
+Subnautica|~/.config/unity3d/Unknown Worlds Entertainment/Subnautica ** Clear
+Subnautica|~/.config/unity3d/Unknown Worlds/Subnautica/SubnauticaSavedGames/
+Surviving Mars|~/.local/share/Paradox Interactive/Surviving Mars/
+TIS-100|~/.config/unity3d/Zachtronics Industries/TIS-100/
+Team Fortress 2|compatdata/440/pfx/drive_c/users/steamuser/My Documents/My Games/Team Fortress 2 ** Clear
+Teamfight Tactics|compatdata/1091500/pfx/drive_c/users/steamuser/Local Settings/Application Data/Riot Games/TeamfightTactics/Saved/SaveGames ** Clear
+TerraTech|~/.config/unity3d/Payload Studios/TerraTech/
+Terraria|~/.local/share/Terraria ** Clear
+Terraria|~/.local/share/Terraria/
+The Binding of Isaac: Rebirth|~/.local/share/binding of isaac rebirth ** Clear
+The Elder Scrolls IV: Oblivion|compatdata/22330/pfx/drive_c/users/steamuser/My Documents/My Games/Oblivion/Saves ** Clear
+The Elder Scrolls V: Skyrim|compatdata/72850/pfx/drive_c/users/steamuser/My Documents/My Games/Skyrim/Saves ** Clear
+The Forest|~/.config/unity3d/Endnight Games/TheForest ** Clear
+The Witcher 3: Wild Hunt|compatdata/292030/pfx/drive_c/users/steamuser/My Documents/The Witcher 3/gamesaves ** Clear
+Timberborn|~/.config/unity3d/Mechanistry/Timberborn/
+Total Tank Simulator|~/.config/unity3d/Noobz from Poland/Total Tank Simulator/
+Totally Accurate Battle Simulator|~/.config/unity3d/Landfall/Totally Accurate Battle Simulator/
+TrackMania Nations Forever|~/.local/share/TrackMania/Skins/Stadium/Mod/
+Trailmakers|~/.config/unity3d/FlashbulbGames/Trailmakers/
+Turmoil|~/.config/Turmoil/
+Ultimate Epic Battle Simulator|~/.config/unity3d/Brilliant Game Studios/Ultimate Epic Battle Simulator/
+UnderMine|~/.config/unity3d/Thorium/UnderMine/
+Undertale|compatdata/391540/pfx/drive_c/users/steamuser/Local Settings/Application Data/UNDERTALE ** Clear
+Unturned|~/.config/unity3d/Smartly Dressed Games/Unturned ** Gold
+Unturned|~/.config/unity3d/Smartly Dressed Games/Unturned/
+War Thunder|~/.local/share/WarThunder ** Clear
+Warframe|~/.winedrive_c/users/steamuser/My Documents/Warframe ** Clear
+Worldbox|~/.config/worldbox/
+XCOM 2|compatdata/268500/pfx/drive_c/users/steamuser/My Documents/My Games/XCOM2/XComGame ** Clear

@@ -17,16 +17,18 @@ def log(message):
 def timeFormat():
     currentTime = time.time()
     formattedTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(currentTime))
+    formattedTime = f"{formattedTime}-auto" # Used to tell the backup removing function to only select auto generated backups for removal
     return formattedTime
 
-def generatePaths(steamLibrary, localLibrary, gameName, savePath, backupPath):
+def generatePaths(steamLibrary, localLibrary, gameName, savePath):
     if not "~" in savePath:
         src = os.path.normpath(f"{steamLibrary}/{savePath}")
     else:
         src = os.path.normpath(f"{savePath}")
         src = os.path.expanduser(src)
 
-    targ = os.path.normpath(f"{localLibrary}{gameName}/{timeFormat()}/{backupPath}")
+    src = src.strip() # Used to remove bad whitespaces
+    targ = os.path.normpath(f"{localLibrary}{gameName}/{timeFormat()}/{gameName}")
     return src, targ
 
 def performCopy(src, targ, gameName, dryRun=False):
@@ -34,14 +36,15 @@ def performCopy(src, targ, gameName, dryRun=False):
         log(f"Saving files for '{gameName}'")
         shutil.copytree(src, targ)
         zipPath = targ
+        log(f"ZipPath: {zipPath}")
         shutil.make_archive(zipPath, 'zip', targ)
         log(f"Creating zip archive of '{gameName}'")
         shutil.rmtree(targ)
 
 def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
     try:
-        log(path)
-        gameName, savePath, backupPath = path.split("|")
+        # log(path)
+        gameName, savePath = path.split("|")
     except ValueError:
         log("Value Error")
         quit("Value Error")
@@ -49,36 +52,44 @@ def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
     if option == None:
         quit("Please select save or restore")
 
-    src, targ = generatePaths(steamLibrary, localLibrary, gameName, savePath, backupPath)
+    src, targ = generatePaths(steamLibrary, localLibrary, gameName, savePath)
     if not os.path.exists(f"{src}"):
-        log(f"You do not appear to have the game '{gameName}'")
+        # log(f"You do not appear to have the game '{gameName}'")
         return
 
-    if not os.path.exists(f"{localLibrary}{gameName}"): # If save path does not exist
-        # This is here because you get things like <folder>/../../<folder> and this errors for some reason
-        performCopy(src, targ, gameName)
-        log(f"Saved data for {gameName}")
-    else:
-        if option.lower() == "save":
-            zipFiles = [f for f in os.listdir(f"{localLibrary}{gameName}") if f.endswith(".zip")]
+    # This can likely be removed no as I do not know what it does and it seems fixed. This comment seems wrong
+
+    # if not os.path.exists(f"{localLibrary}{gameName}"): # If save path does not exist
+    #     # This is here because you get things like <folder>/../../<folder> and this errors for some reason
+    #     performCopy(src, targ, gameName)
+    #     log(f"Saved data for {gameName}")
+    # else:
+
+    log(f"option: {option}")
+    if option.lower() == "save":
+        if os.path.exists(f"{localLibrary}{gameName}"): # Check the path exists. No need to remove backups if there are none
+            zipFiles = [f for f in os.listdir(f"{localLibrary}{gameName}") if f.endswith("auto")]
             zipFiles = sorted(zipFiles)
             log(f"You have {len(zipFiles)} backups for game: '{gameName}'")
-        
+
             while len(zipFiles) > maxBackups: # While loop because if you lower the amount of backups that you want saved you want all the old ones deleted
                 log(f"More than {maxBackups} backups for game '{gameName}'. Removing the oldest: {zipFiles[-1]}")
                 oldestBackup = os.path.join(f"{localLibrary}{gameName}", zipFiles[-1])
                 os.remove(oldestBackup)
-            performCopy(src, targ, gameName)
-            log(f"Saved data for {gameName}")
-        if option.lower() == "restore":
-            quit("Not yet implimented") # TODO
+        performCopy(src, targ, gameName)
+        log(f"Saved data for {gameName}")
+    if option.lower() == "restore":
+        quit("Not yet implimented") # TODO
 
     return
 
 def saveGames(steamLibrary, localLibrary, maxBackups, option):
     log(platform.system())
     try:
-        readlines = open(f"../SavePathDataset-{platform.system()}.txt", 'r').read().splitlines()
+        if not debugMode:
+            readlines = open(f"../SavePathDataset-{platform.system()}.txt", 'r').read().splitlines()
+        else:
+            readlines = open(f"../SavePathDataset-{platform.system()}-Debug.txt", 'r').read().splitlines()
     except:
         quit(f"You do not have any datasets for platform: {platform.system()}")
     savePaths = []
