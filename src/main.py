@@ -14,13 +14,16 @@ def log(message):
     if debugMode:
         print(message)
 
-def timeFormat():
+def timeFormat(option):
     currentTime = time.time()
     formattedTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(currentTime))
-    formattedTime = f"{formattedTime}-auto" # Used to tell the backup removing function to only select auto generated backups for removal
+    if option.lower() == "save":
+        formattedTime = f"{formattedTime}-auto" # Used to tell the backup removing function to only select auto generated backups for removal
+    elif option.lower() == "restore":
+        formattedTime = f"{formattedTime}-backup" # Used to tell the backup removing function to only select auto generated backups for removal
     return formattedTime
 
-def generatePaths(steamLibrary, localLibrary, gameName, savePath):
+def generatePaths(steamLibrary, localLibrary, gameName, savePath, option):
     if not "~" in savePath:
         src = os.path.normpath(f"{steamLibrary}/{savePath}")
     else:
@@ -28,7 +31,7 @@ def generatePaths(steamLibrary, localLibrary, gameName, savePath):
         src = os.path.expanduser(src)
 
     src = src.strip() # Used to remove bad whitespaces
-    targ = os.path.normpath(f"{localLibrary}{gameName}/{timeFormat()}/{gameName}")
+    targ = os.path.normpath(f"{localLibrary}{gameName}/{timeFormat(option)}/{gameName}")
     return src, targ
 
 # TODO add support for dry runs
@@ -42,6 +45,18 @@ def performCopy(src, targ, gameName, dryRun=False):
         log(f"Creating zip archive of '{gameName}'")
         shutil.rmtree(targ)
 
+def unzipFile(zipPath, extractTo):
+    if not zipfile.is_zipfile(zipPath):
+        quit("The provided file is not a valid ZIP file.")
+
+    # Create the directory to extract files if it doesn't exist
+    os.makedirs(extractTo, exist_ok=True)
+
+    with zipfile.ZipFile(zipPath, 'r') as zipRef:
+        zipRef.extractall(extractTo)
+
+    log(f"Extracted: {zipPath} to {extractTo}")
+
 def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
     try:
         # log(path)
@@ -51,20 +66,12 @@ def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
         return ValueError
 
     if option == None:
-        quit("Please select save or restore")
+        quit("Please select save or restore (-s or -r)")
 
-    src, targ = generatePaths(steamLibrary, localLibrary, gameName, savePath)
+    src, targ = generatePaths(steamLibrary, localLibrary, gameName, savePath, option) # targ will end in '-auto' if it is a auto generated save file or '-backup' if it is created during the restore process
     if not os.path.exists(f"{src}"):
-        # log(f"You do not appear to have the game '{gameName}'")
+        log(f"You do not appear to have the game '{gameName}'")
         return
-
-    # This can likely be removed no as I do not know what it does and it seems fixed. This comment seems wrong
-
-    # if not os.path.exists(f"{localLibrary}{gameName}"): # If save path does not exist
-    #     # This is here because you get things like <folder>/../../<folder> and this errors for some reason
-    #     performCopy(src, targ, gameName)
-    #     log(f"Saved data for {gameName}")
-    # else:
 
     log(f"option: {option}")
     if option.lower() == "save":
@@ -83,12 +90,19 @@ def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
         log(f"Saved data for {gameName}")
         return True
     if option.lower() == "restore":
-        quit("Not yet implimented") # TODO
-
+        performCopy(src, targ, gameName) # Create the backup save to make sure no data is overwritten
+        zipFiles = [f for f in os.listdir(f"{localLibrary}{gameName}") if f.endswith("auto")] # Only restore from autosaves
+        zipFiles = sorted(zipFiles, reverse=True)
+        log(f"Selecting the latest backup out of {len(zipFiles)} for game: '{gameName}'")
+        latestBackup = os.path.join(f"{localLibrary}{gameName}", zipFiles[0])
+        log(f"Restoring backup '{latestBackup}' to game files")
+        zipPath = f"{latestBackup}/{gameName}.zip"
+        shutil.rmtree(src)
+        unzipFile(zipPath, src) # Unzip latest backup into the game save data location
+        
     return None
 
 def saveGames(steamLibrary, localLibrary, maxBackups, option):
-    log(platform.system())
     try:
         if not debugMode:
             readlines = open(f"../SavePathDataset-{platform.system()}.txt", 'r').read().splitlines()
@@ -136,8 +150,8 @@ if __name__ == "__main__":
     parser.add_argument('-b', '--backups', type=int, help='The number of Steam game backups to store during saving')
     parser.add_argument('-d', '--debug', action='store_true', help='Used by developers to debug the program')
     args = parser.parse_args()
-    # example steamLibrary path /media/<user>/<drive>/steamLibrary/
-    # add argParser with required steamLibrary path but other optional
+    # Example steamLibrary path /media/<user>/<drive>/steamLibrary/
+    # Add argParser with required steamLibrary path but other optional
     steamLibrary = None
 
 
