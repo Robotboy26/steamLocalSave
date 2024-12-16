@@ -75,19 +75,19 @@ def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
 
     log(f"option: {option}")
     if option.lower() == "save":
-        if os.path.exists(f"{localLibrary}{gameName}"): # Check the path exists. No need to remove backups if there are none
-            performCopy(src, targ, gameName)
-            zipFiles = [f for f in os.listdir(f"{localLibrary}{gameName}") if f.endswith("auto")]
-            zipFiles = sorted(zipFiles, reverse=True)
-            log(f"You have {len(zipFiles)} backups for game: '{gameName}'")
+        performCopy(src, targ, gameName)
+        zipFiles = [f for f in os.listdir(f"{localLibrary}{gameName}") if f.endswith("auto")]
+        zipFiles = sorted(zipFiles, reverse=True)
+        log(f"You have {len(zipFiles)} backups for game: '{gameName}'")
 
-            while len(zipFiles) > maxBackups: # While loop because if you lower the amount of backups that you want saved you want all the old ones deleted
-                log(f"zipFiles {zipFiles}. Bool: {len(zipFiles) > maxBackups}")
-                log(f"More than {maxBackups} backups for game '{gameName}'. Removing the oldest: {zipFiles[-1]}")
-                oldestBackup = os.path.join(f"{localLibrary}{gameName}", zipFiles[-1])
-                shutil.rmtree(oldestBackup)
-                zipFiles.pop() # If you deleted to oldest aready you have to remove the oldest from the list
-        log(f"Saved data for {gameName}")
+        while len(zipFiles) > maxBackups: # While loop because if you lower the amount of backups that you want saved you want all the old ones deleted
+            log(f"zipFiles {zipFiles}. Bool: {len(zipFiles) > maxBackups}")
+            log(f"More than {maxBackups} backups for game '{gameName}'. Removing the oldest: {zipFiles[-1]}")
+            oldestBackup = os.path.join(f"{localLibrary}{gameName}", zipFiles[-1])
+            shutil.rmtree(oldestBackup)
+            zipFiles.pop() # If you deleted to oldest aready you have to remove the oldest from the list
+
+        log(f"Saved data for '{gameName}'")
         return True
     if option.lower() == "restore":
         performCopy(src, targ, gameName) # Create the backup save to make sure no data is overwritten
@@ -112,11 +112,10 @@ def saveGames(steamLibrary, localLibrary, maxBackups, option):
         quit(f"You do not have any datasets for platform: {platform.system()}")
     savePaths = []
     for path in readlines:
-        # TODO change comment to use '#'
-        if "**" in path and not path.startswith("**"):
-            path = path.split("**") # This is for end of the line comments
+        if "#" in path and not path.startswith("#"):
+            path = path.split("#") # This is for end of the line comments
             path = path[0]
-        if not path.startswith("**") and not path == "": # If not a comment and not empty
+        if not path.startswith("#") and not path == "": # If not a comment and not empty
             savePaths.append(path)
     numberOfGamesToSave = len(savePaths)
     log(f"Searching {numberOfGamesToSave} game save data locations.")
@@ -160,7 +159,7 @@ if __name__ == "__main__":
         log(args)
 
     if args.backups == None:
-        args.backups = 3 # default
+        args.backups = 2 # default
     if args.localLibrary == None:
         args.localLibrary = "../SteamSaveLocal/"
 
