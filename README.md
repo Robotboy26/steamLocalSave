@@ -52,3 +52,10 @@ Access you backed up game data.
 cd ../SteamSaveLocal
 ls
 ```
+
+# How to contribute
+
+Because of the scattered location of video game save data each game is registered seperately.
+If you don't see your favorite steam games feel free to add them to the registry.
+There is currently a seperate regestry for Linux and Windows installs.
+The Linux regestry file is called 'SavePathDataset-Linux.txt'

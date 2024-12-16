@@ -98,7 +98,8 @@ def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
         log(f"Restoring backup '{latestBackup}' to game files")
         zipPath = f"{latestBackup}/{gameName}.zip"
         shutil.rmtree(src)
-        unzipFile(zipPath, src) # Unzip latest backup into the game save data location
+        unzipFile(zipPath, src) # Unzip latest backup into the game save data location.
+    # TODO add an option to remove the game data and related directorys after saving to clear up space on a computer.
         
     return None
 
