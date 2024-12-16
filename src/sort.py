@@ -1,25 +1,23 @@
-import shutil
-import pdb
-# this will sort the save dataset
-def main():
-    shutil.copy("../SavePathDatasetLinux.txt", "../SavePathDatasetLinux.txt.backup")
-    readlines = open("../SavePathDatasetLinux.txt", 'r').read().splitlines()
-    SavePaths = []
-    # ignore comments
-    for path in readlines:
-        if not path.startswith("//"):
-            SavePaths.append(path)
-    numberOfGamesToSave = len(SavePaths)
-    print(f"Sorting {numberOfGamesToSave} games.")
-    SavePaths = sorted(SavePaths)
-    sortedIndex = 0
-    for x in range(len(readlines)):
-        if not readlines[x].startswith("//"):
-            readlines[x] = SavePaths[sortedIndex]
-            sortedIndex += 1
+# TODO turning this into a github action that will sort it on each commit so that it does not have to be done manually?
+import sys
 
-    with open("../SavePathDatasetLinux.txt", 'w') as F:
-        F.write("\n".join(readlines))
+def sort_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+        
+        sortedLines = sorted(line.strip() for line in lines)
+        
+        for line in sortedLines: # Copy and paste this into a new file
+            print(line)
 
-if __name__ == "__main__":
-    main()
+    except FileNotFoundError:
+        print(f"Error: The file '{filename}' was not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("Usage: python3 sort_file.py <filename>")
+    else:
+        sort_file(sys.argv[1])

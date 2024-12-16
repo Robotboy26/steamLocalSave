@@ -8,22 +8,25 @@ import platform
 import concurrent.futures
 import pdb
 
+debugMode = False
+
 def log(message):
-    print(message)
+    if debugMode:
+        print(message)
 
 def timeFormat():
     currentTime = time.time()
     formattedTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(currentTime))
     return formattedTime
 
-def generatePaths(SteamLibrary, gameName, savePath, backupPath):
+def generatePaths(steamLibrary, localLibrary, gameName, savePath, backupPath):
     if not "~" in savePath:
-        src = os.path.normpath(f"{SteamLibrary}/{savePath}")
+        src = os.path.normpath(f"{steamLibrary}/{savePath}")
     else:
         src = os.path.normpath(f"{savePath}")
         src = os.path.expanduser(src)
 
-    targ = os.path.normpath(f"{LocalLibrary}{gameName}/{timeFormat()}/{backupPath}")
+    targ = os.path.normpath(f"{localLibrary}{gameName}/{timeFormat()}/{backupPath}")
     return src, targ
 
 def performCopy(src, targ, gameName, dryRun=False):
@@ -35,85 +38,98 @@ def performCopy(src, targ, gameName, dryRun=False):
         log(f"Creating zip archive of '{gameName}'")
         shutil.rmtree(targ)
 
-def saveGame(SteamLibrary, LocalLibrary, maxBackups, option, path):
+def saveGame(steamLibrary, localLibrary, maxBackups, option, path):
     try:
+        log(path)
         gameName, savePath, backupPath = path.split("|")
     except ValueError:
-        return
+        log("Value Error")
+        quit("Value Error")
 
-    # log(f"Still need to save {numberOfGamesToSave - SavePaths.index(path) - 1} games data")
+    if option == None:
+        quit("Please select save or restore")
 
-    src, targ = generatePaths(SteamLibrary, gameName, savePath, backupPath)
+    src, targ = generatePaths(steamLibrary, localLibrary, gameName, savePath, backupPath)
     if not os.path.exists(f"{src}"):
-        # log(f"You do not appear to have the game '{gameName}'")
+        log(f"You do not appear to have the game '{gameName}'")
         return
 
-    if not os.path.exists(f"{LocalLibrary}{gameName}"): # is save path does not exist
-        # this is here because you get things like <folder>/../../<folder> and this errors
+    if not os.path.exists(f"{localLibrary}{gameName}"): # If save path does not exist
+        # This is here because you get things like <folder>/../../<folder> and this errors for some reason
         performCopy(src, targ, gameName)
         log(f"Saved data for {gameName}")
     else:
-        if option.lower() == "all":
-            zipFiles = [f for f in os.listdir(f"{LocalLibrary}{gameName}") if f.endswith(".zip")]
+        if option.lower() == "save":
+            zipFiles = [f for f in os.listdir(f"{localLibrary}{gameName}") if f.endswith(".zip")]
             zipFiles = sorted(zipFiles)
             log(f"You have {len(zipFiles)} backups for game: '{gameName}'")
         
-            while len(zipFiles) > maxBackups:
+            while len(zipFiles) > maxBackups: # While loop because if you lower the amount of backups that you want saved you want all the old ones deleted
                 log(f"More than {maxBackups} backups for game '{gameName}'. Removing the oldest: {zipFiles[-1]}")
-                oldestBackup = os.path.join(f"{LocalLibrary}{gameName}", zipFiles[-1])
+                oldestBackup = os.path.join(f"{localLibrary}{gameName}", zipFiles[-1])
                 os.remove(oldestBackup)
             performCopy(src, targ, gameName)
             log(f"Saved data for {gameName}")
+        if option.lower() == "restore":
+            quit("Not yet implimented") # TODO
 
     return
 
-def saveGames(SteamLibrary, LocalLibrary, maxBackups, option):
-    if not os.path.exists("../SavePathDatasetLinux.txt"):
-        quit("You do not have any datasets.")
-    if platform.system() == "Linux":
-        readlines = open("../SavePathDatasetLinux.txt", 'r').read().splitlines()
-    else:
-        quit("you only have the database for Linux.")
-    SavePaths = []
+def saveGames(steamLibrary, localLibrary, maxBackups, option):
+    log(platform.system())
+    try:
+        readlines = open(f"../SavePathDataset-{platform.system()}.txt", 'r').read().splitlines()
+    except:
+        quit(f"You do not have any datasets for platform: {platform.system()}")
+    savePaths = []
     for path in readlines:
         if "**" in path and not path.startswith("**"):
-            path = path.split("**") # this is for end of the line comments
+            path = path.split("**") # This is for end of the line comments
             path = path[0]
-        if not path.startswith("**") or not path == "":
-            SavePaths.append(path)
-    numberOfGamesToSave = len(SavePaths)
-    log(f"The save data of {numberOfGamesToSave} games.")
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = [executor.submit(saveGame, SteamLibrary, LocalLibrary, maxBackups, option, path) for path in SavePaths]
+        if not path.startswith("**") and not path == "": # If not a comment and not empty
+            savePaths.append(path)
+    numberOfGamesToSave = len(savePaths)
+    log(f"Searching {numberOfGamesToSave} game save data locations.")
+    if not debugMode:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(saveGame, steamLibrary, localLibrary, maxBackups, option, path) for path in savePaths]
+    else:
+        for path in savePaths:
+            saveGame(steamLibrary, localLibrary, maxBackups, option, path)
 
 def pushFiles():
     pass
 
 if __name__ == "__main__":
-    # example SteamLibrary path /media/<user>/<drive>/SteamLibrary/
-    # add argParser with required SteamLibrary path but other optional
-    SteamLibrary = None
-    maxBackups = 2 # default
-    print(len(sys.argv))
-    if len(sys.argv) > 2:
-        option = sys.argv[1]
-        SteamLibrary = sys.argv[2]
-    if SteamLibrary == None:
-        quit("Please provide SteamLibrary path")
+    parser = argparse.ArgumentParser(description='Used to save and restore steam game save data')
+    parser.add_argument('steamLibraryPath', nargs='?', help='The path to your steam library')
+    parser.add_argument('-s', '--save', action='store_true', help='Save Steam game data')
+    parser.add_argument('-r', '--restore', action='store_true', help='Restore Steam game data')
+    parser.add_argument('-l', '--localLibrary', nargs='?', help='Location to store or restore Steam data from or to')
+    parser.add_argument('-b', '--backups', type=int, help='The number of Steam game backups to store during saving')
+    parser.add_argument('-d', '--debug', action='store_true', help='Used by developers to debug the program')
+    args = parser.parse_args()
+    # example steamLibrary path /media/<user>/<drive>/steamLibrary/
+    # add argParser with required steamLibrary path but other optional
+    steamLibrary = None
+    print(args)
 
-    # append stuff to the SteamLibrary path to get to the games
-    SteamLibrary = f"{SteamLibrary}steamapps/"
+    if args.debug:
+        debugMode = True
 
-    LocalLibrary = None
-    if len(sys.argv) > 3:
-        LocalLibrary = sys.argv[3]
-    if LocalLibrary == None:
-        print("Local library is not set default is being used")
+    if args.backups == None:
+        args.backups = 2 # default
+    if args.localLibrary == None:
+        args.localLibrary = "../SteamSaveLocal/"
 
-    if LocalLibrary == None:
-        LocalLibrary = "../SteamSaveLocal/"
+    if not os.path.exists(args.localLibrary):
+        os.mkdir(args.localLibrary)
 
-    if not os.path.exists(LocalLibrary):
-        os.mkdir(LocalLibrary)
+    option = None
+    if args.save:
+        option = "save"
 
-    saveGames(SteamLibrary, LocalLibrary, maxBackups, option)
+    if args.restore:
+        option = "restore"
+
+    saveGames(args.steamLibraryPath, args.localLibrary, args.backups, option)
