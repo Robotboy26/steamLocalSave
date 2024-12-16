@@ -42,6 +42,7 @@ python3 main.py -s ~/.steam/steam
 The library path is required and 'steamapps' should be in the directory you point to but do not include it in your path.
 
 NOT CORRECT `~/.steam/steam/steamapps'
+
 CORRECT '~/.steam/steam'
 
 '-s' is save, it is used to backup your game data.
