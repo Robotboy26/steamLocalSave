@@ -158,7 +158,7 @@ def saveGames(steamLibrary, localLibrary, maxBackups, option, uuid):
             try:
                 result = future.result()  # This retrieves the result of the call
                 if result:
-                    print(f"Successfully saved game for path: {path}.")
+                    print(f"Successfully saved game with path: {path}.")
             except Exception as e:
                 print(f"Error occurred while saving game for path: {path}. Exception: {e}")
 
