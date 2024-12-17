@@ -1,0 +1,4 @@
+steamLibraryPath: '~/.steam/steam/'
+backups: 2
+uuid: 123456789
+debug: true
