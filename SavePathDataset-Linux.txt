@@ -8,5 +8,12 @@
 # status. I will put Gold at the end of a line if it works on my computer
 # status. I will put Wrong at the end of the line if I think that the save location is wrong (This is not a sure thing)
 #A space is not needed after a comment but is recommended
+ASTRONEER|steamapps/compatdata/361420/pfx/drive_c/users/steamuser/AppData/Local/Astro/Saved
+Bad North|~/.steam/debian-installation/userdata/;/688420/remote|~/.steam/steam/userdata/;/688420/remote
 ClusterTruck|~/.config/unity3d/Landfall/Clustertruck
+Colony Survival|steamapps/common/Colony Survival/gamedata # Close enough
 TIS-100|~/.local/share/TIS-100/
+Kingdom|~/.config/unity3d/noio/Kingdom/Release
+Kingdom Two Crowns|~/.config/unity3d/noio/KingdomTwoCrowns/Release
+Stacklands|steamapps/compatdata/1948280/pfx/drive_c/users/steamuser/AppData/LocalLow/sokpop/Stacklands
+Starbound|steamapps/common/Starbound/storage
