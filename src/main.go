@@ -153,7 +153,9 @@ func findGame(steamLibrary, localLibrary, path string, uuid int) (Game, bool, er
             src = strings.ReplaceAll(src, ";", fmt.Sprintf("%d", uuid))
         }
         _, err := os.Stat(src)
-        if err != nil {
+        if os.IsNotExist(err) {
+            return game, false, nil
+        } else if err != nil {
             return game, false, err
         }
         foundSources = append(foundSources, src)
