@@ -15,12 +15,12 @@ import (
 
 // TODO: needs improvment
 type Game struct {
-    Name string
-    libraryPathList []string
-    constantPathList []string
-    srcList []string
-    foundLocation string
-    targ string
+    Name             string
+    LibraryPathList  []string `json:"libraryPathList"`
+    ConstantPathList []string `json:"constantPathList"`
+    srcList          []string
+    foundLocation    string
+    targ             string
 }
 
 var debugMode bool
@@ -46,7 +46,7 @@ func generatePaths(steamLibrary, localLibrary, gameName, suffix string, savePath
         } else {
             src, err := os.UserHomeDir()
             if err != nil {
-                return srcList, "", err
+                return nil, "", err
             }
             src = filepath.Join(src, strings.TrimPrefix(path, "~"))
             srcList = append(srcList, src)
@@ -107,12 +107,46 @@ func getAutoBackupFiles(localLibrary string, gameName string) ([]string, error) 
     return backups, nil
 }
 
+func readGamesDatabaseL(platform string) ([]Game, error) {
+    dbDir := fmt.Sprintf("../database/%s", platform)
+    var games []Game
+
+    // Read the database dir
+    dbFiles, err := os.ReadDir(dbDir)
+    if os.IsNotExist(err) {
+        return nil, errors.New("The database dir is missing or your platform is not supported.")
+    } else if err != nil {
+        return nil, err
+    }
+
+    for _, file := range dbFiles {
+        if file.IsDir() {
+            continue
+        }
+
+        if strings.HasSuffix(file.Name(), ".txt") {
+            var game Game
+
+            gameName := strings.TrimSuffix(file.Name(), ".txt")
+            game.Name = gameName
+            filePath := filepath.Join(dbDir, file.Name())
+            gameData, err := os.ReadFile(filePath)
+            if err != nil {
+                return nil, fmt.Errorf("Error reading config file: %v", err)
+            }
+
+            err = json.Unmarshal(gameData, &game)
+            if err != nil {
+                return nil, fmt.Errorf("Error decoding config file: %v", err)
+            }
+            games = append(games, game)
+        }
+    }
+
+    return games, nil
+}
+
 func readGamesDatabase(platform string) ([]string, error) {
-    // TODO
-    // return []game
-    // read database dir
-    // then platform dir
-    // then all games to create a list of game structs with the needed information
     fileName := fmt.Sprintf("../SavePathDataset-%s.txt", platform)
     file, err := os.Open(fileName)
     if err != nil {
@@ -138,10 +172,10 @@ func findGame(steamLibrary, localLibrary, path string, uuid int) (Game, bool, er
 
     parts := strings.SplitN(path, "|", 2)
     game.Name = parts[0]
-    game.constantPathList = strings.Split(parts[1], "|")
+    game.ConstantPathList = strings.Split(parts[1], "|")
 
     var err error
-    game.srcList, game.targ, err = generatePaths(steamLibrary, localLibrary, game.Name, "auto", game.constantPathList)
+    game.srcList, game.targ, err = generatePaths(steamLibrary, localLibrary, game.Name, "auto", game.ConstantPathList)
     if err != nil {
         return game, false, err
     }
@@ -292,6 +326,14 @@ func main() {
     }
 
     config.Platform = strings.ToLower(config.Platform)
+
+
+    // Testing
+    games, err := readGamesDatabaseL(config.Platform)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(games)
 
     // Start saving or restoring games
     saveGames(&config)
