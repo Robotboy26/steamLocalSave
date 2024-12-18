@@ -1,9 +1,10 @@
+
 # A comment must start with "#"
+# TODO remove status and store in a different way.
 # These are all for linux the save location, windows might be different (it's very annoying)
 # This is an example of a comment
 # alternate target paths are not supported right now
 # empty line in the file are not recommended right now
-# TODO remove status and store in a different way.
 # status. I will put Clear at the end of a line if I do not have the game so cannot test (or have just not tested yet)
 # status. I will put Gold at the end of a line if it works on my computer
 # status. I will put Wrong at the end of the line if I think that the save location is wrong (This is not a sure thing)
@@ -11,19 +12,14 @@
 ASTRONEER|steamapps/compatdata/361420/pfx/drive_c/users/steamuser/AppData/Local/Astro/Saved
 Airmech Strike|steamapps/compatdata/206500/pfx/drive_c/users/steamuser/AppData/ # Not Done
 Anno 1800|compatdata/916440/pfx/drive_c/users/steamuser/AppData/Local/Ubisoft Game Launcher
-Bad North|~/.steam/debian-installation/userdata/;/688420/remote|~/.steam/steam/userdata/;/688420/remote
-ClusterTruck|~/.config/unity3d/Landfall/Clustertruck
-Colony Survival|steamapps/common/Colony Survival/gamedata # Close enough
-TIS-100|~/.local/share/TIS-100/
-Kingdom|~/.config/unity3d/noio/Kingdom/Release
-Kingdom Two Crowns|~/.config/unity3d/noio/KingdomTwoCrowns/Release
-Stacklands|steamapps/compatdata/1948280/pfx/drive_c/users/steamuser/AppData/LocalLow/sokpop/Stacklands
-Starbound|steamapps/common/Starbound/storage
 Another Brick in the Mall|compatdata/521150/pfx/drive_c/users/steamuser/AppData/Local/Another Brick in the Mall
 Autonauts|compatdata/979120/pfx/drive_c/users/steamuser/AppData/LocalLow/Denki Ltd/Autonauts/Saves
+Bad North|~/.steam/debian-installation/userdata/;/688420/remote|~/.steam/steam/userdata/;/688420/remote
 Banished|compatdata/242920/pfx/drive_c/users/steamuser/Documents/Banished/Save
 Bomber Crew|~/.config/unity3d/Runner Duck/Bomber Crew
 Castle Story|~/.config/unity3d/Sauropod Studio/Castle Story
+ClusterTruck|~/.config/unity3d/Landfall/Clustertruck
+Colony Survival|steamapps/common/Colony Survival/gamedata # Close enough
 Dig Or Die|compatdata/315460/pfx/drive_c/users/steamuser/Documents/Dig or Die
 Door Kickers Action Squad|compatdata/686200/pfx/drive_c/users/steamuser/AppData/Local/KillHouseGames/ActionSquad
 Empires Of The Undergrowth|compatdata/463530/pfx/drive_c/users/steamuser/AppData/Local/EotU/Saved/SaveGames
@@ -34,8 +30,14 @@ Factorio|~/.factorio
 FortressCraft Evolved|~/.config/unity3d/ProjectorGames/FortressCraft/Worlds
 Forza Horizon 5|compatdata/1551360/pfx/drive_c/users/steamuser/AppData/Local/ForzaHorizon5/User_SteamLocalStorageDirectory/ConnectedStorage
 Graveyard Keeper|~/.config/unity3d/Lazy Bear Games/Graveyard Keeper/
+Kingdom Two Crowns|~/.config/unity3d/noio/KingdomTwoCrowns/Release
 Kingdoms and Castles|~/.config/unity3d/Lion Shield/Kingdoms and Castles/Saves
+Kingdom|~/.config/unity3d/noio/Kingdom/Release
 Oxygen Not Included|~/.config/unity3d/Klei/Oxygen Not Included/
+Prison Architect|~/.Prison Architect
+Sid Meier's Civilization V|~/.local/share/aspyr-media/Sid Meier's Civilization VI
+Stacklands|steamapps/compatdata/1948280/pfx/drive_c/users/steamuser/AppData/LocalLow/sokpop/Stacklands
+Starbound|steamapps/common/Starbound/storage
 Startup Company|~/.config/unity3d/2Awesome Partners/Startup Company/SaveFiles
+TIS-100|~/.local/share/TIS-100/
 Valheim|~/.config/unity3d/IronGate/Valheim
-
