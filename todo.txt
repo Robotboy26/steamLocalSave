@@ -6,3 +6,4 @@ add a named saving feature that will not be auto deleted
 Refactor functions to use the struct with global config data and pass that through.
 Clearnup functions for higher readability
 Proper error handling not just error panic and make them more consistant
+Add proper testing of the codebase
