@@ -1,7 +1,7 @@
 package main
 
 import (
-    "bufio"
+    // "bufio"
     "encoding/json"
     "fmt"
     "log"
@@ -16,11 +16,13 @@ import (
 // TODO: needs improvment
 type Game struct {
     Name             string
-    LibraryPathList  []string `json:"libraryPathList"`
-    ConstantPathList []string `json:"constantPathList"`
+    PathList         []string `json:"pathList"`
     srcList          []string
     foundLocation    string
-    targ             string
+    // fix targ
+    targAuto         string
+    targBackup       string
+    DeletePaths      []string `json:"deleteList"`
 }
 
 var debugMode bool
@@ -37,7 +39,7 @@ func timeFormat() string {
     return formattedTime
 }
 
-func generatePaths(steamLibrary, localLibrary, gameName, suffix string, savePaths []string) ([]string, string, error) {
+func generatePaths(steamLibrary, localLibrary, gameName string, savePaths []string) ([]string, string, string, error) {
     var srcList []string
     for _, path := range savePaths {
         if !strings.Contains(path, "~") {
@@ -46,15 +48,17 @@ func generatePaths(steamLibrary, localLibrary, gameName, suffix string, savePath
         } else {
             src, err := os.UserHomeDir()
             if err != nil {
-                return nil, "", err
+                return nil, "", "", err
             }
             src = filepath.Join(src, strings.TrimPrefix(path, "~"))
             srcList = append(srcList, src)
         }
     }
-    timeCombination := fmt.Sprintf("%s-%s", timeFormat(), suffix)
-    target := filepath.Join(localLibrary, gameName, timeCombination, gameName)
-    return srcList, target, nil
+    timeCombinationAuto := fmt.Sprintf("%s-auto", timeFormat())
+    timeCombinationBackup := fmt.Sprintf("%s-auto", timeFormat())
+    targetAuto := filepath.Join(localLibrary, gameName, timeCombinationAuto, gameName)
+    targetBackup := filepath.Join(localLibrary, gameName, timeCombinationBackup, gameName)
+    return srcList, targetAuto, targetBackup, nil
 }
 
 func performCopy(src string, targ string, dryRun bool) error {
@@ -107,7 +111,7 @@ func getAutoBackupFiles(localLibrary string, gameName string) ([]string, error) 
     return backups, nil
 }
 
-func readGamesDatabaseL(platform string) ([]Game, error) {
+func readGamesDatabase(platform string) ([]Game, error) {
     dbDir := fmt.Sprintf("../database/%s", platform)
     var games []Game
 
@@ -124,10 +128,10 @@ func readGamesDatabaseL(platform string) ([]Game, error) {
             continue
         }
 
-        if strings.HasSuffix(file.Name(), ".txt") {
+        if strings.HasSuffix(file.Name(), ".json") {
             var game Game
 
-            gameName := strings.TrimSuffix(file.Name(), ".txt")
+            gameName := strings.TrimSuffix(file.Name(), ".json")
             game.Name = gameName
             filePath := filepath.Join(dbDir, file.Name())
             gameData, err := os.ReadFile(filePath)
@@ -146,42 +150,16 @@ func readGamesDatabaseL(platform string) ([]Game, error) {
     return games, nil
 }
 
-func readGamesDatabase(platform string) ([]string, error) {
-    fileName := fmt.Sprintf("../SavePathDataset-%s.txt", platform)
-    file, err := os.Open(fileName)
-    if err != nil {
-        return nil, err
-    }
-    defer file.Close()
-
-    var savePaths []string
-    scanner := bufio.NewScanner(file)
-    for scanner.Scan() {
-        line := strings.TrimSpace(scanner.Text())
-        if strings.HasPrefix(line, "#") || line == "" {
-            continue
-        }
-        lineParts := strings.SplitN(line, "#", 2)
-        savePaths = append(savePaths, strings.TrimSpace(lineParts[0]))
-    }
-    return savePaths, scanner.Err()
-}
-
-func findGame(steamLibrary, localLibrary, path string, uuid int) (Game, bool, error) {
-    var game = Game{}
-
-    parts := strings.SplitN(path, "|", 2)
-    game.Name = parts[0]
-    game.ConstantPathList = strings.Split(parts[1], "|")
-
+func findGame(steamLibrary, localLibrary string, uuid int, game Game) (Game, bool, error) {
     var err error
-    game.srcList, game.targ, err = generatePaths(steamLibrary, localLibrary, game.Name, "auto", game.ConstantPathList)
+    game.srcList, game.targAuto, game.targBackup, err = generatePaths(steamLibrary, localLibrary, game.Name, game.PathList)
     if err != nil {
         return game, false, err
     }
 
     var foundSources []string
 
+    // Add uuid to src paths
     for _, src := range game.srcList {
         if uuid != 0 && strings.Contains(src, ";") {
             src = strings.ReplaceAll(src, ";", fmt.Sprintf("%d", uuid))
@@ -203,8 +181,8 @@ func findGame(steamLibrary, localLibrary, path string, uuid int) (Game, bool, er
     }
 }
 
-func saveGame(steamLibrary, localLibrary, option, path string, maxBackups, uuid int) (bool, error) {
-    game, foundGame, err := findGame(steamLibrary, localLibrary, path, uuid)
+func saveGame(steamLibrary, localLibrary, option string, maxBackups, uuid int, game Game) (bool, error) {
+    game, foundGame, err := findGame(steamLibrary, localLibrary, uuid, game)
     if err != nil {
         return false, err
     }
@@ -214,11 +192,11 @@ func saveGame(steamLibrary, localLibrary, option, path string, maxBackups, uuid 
 
     if option == "save" {
         fmt.Printf("Saving game files for '%s'\n", game.Name)
-        err := performCopy(game.foundLocation, game.targ, false)
+        err := performCopy(game.foundLocation, game.targAuto, false)
         if err != nil {
             return false, err
         }
-        err = deleteDir(game.targ)
+        err = deleteDir(game.targAuto)
         if err != nil {
             return false, err
         }
@@ -229,7 +207,7 @@ func saveGame(steamLibrary, localLibrary, option, path string, maxBackups, uuid 
         return true, nil
     } else if option == "restore" {
         // Create a backup first
-        performCopy(game.foundLocation, game.targ, false)
+        performCopy(game.foundLocation, game.targBackup, false)
         zipFiles, err := getAutoBackupFiles(localLibrary, game.Name)
         if err != nil || len(zipFiles) == 0 {
             return true, nil
@@ -241,31 +219,47 @@ func saveGame(steamLibrary, localLibrary, option, path string, maxBackups, uuid 
             return false, err
         }
         return true, nil
+    } else if option == "delete" {
+        // TODO: add saftey to this
+        // Create a backup first
+        performCopy(game.foundLocation, game.targAuto, false)
+        for x := 0; x < len(game.DeletePaths) - 1; x ++ {
+            pathToDelete := game.DeletePaths[x]
+            info, err := os.Stat(pathToDelete)
+            if os.IsNotExist(err) {
+                continue
+            } else if err != nil {
+                return false, err
+            }
+            if info.IsDir() {
+                deleteDir(pathToDelete)
+            }
+        }
     }
     optionError := errors.New("Option error, no operation was ran.")
     return false, optionError
 }
 
 func saveGames(config *Config) {
-    savePaths, err := readGamesDatabase(config.Platform)
+    games, err := readGamesDatabase(config.Platform)
     if err != nil {
-        log.Fatalf("Unable to read save paths: %v", err)
+        log.Fatal(err)
     }
 
     var wg sync.WaitGroup
-    for _, path := range savePaths {
+    for _, game := range games {
         wg.Add(1)
-        go func(pathToGame string) {
+        go func(game Game) {
             defer wg.Done()
             // TODO: when changing this to use config use a copy of config not a pointer to it as too not accidently change a global value in a unwanted way
-            status, err := saveGame(config.SteamLibraryPath, config.LocalLibrary, config.Mode, pathToGame, config.MaxBackups, config.UUID)
+            status, err := saveGame(config.SteamLibraryPath, config.LocalLibrary, config.Mode, config.MaxBackups, config.UUID, game)
             if err != nil {
-                log.Printf("Error saving game for path: %s. Exception: %v\n", pathToGame, err)
+                log.Printf("Error saving game for path: %s. Exception: %v\n", game, err)
             }
             if status {
-                fmt.Printf("Successfully saved game with path: %s.\n", pathToGame)
+                fmt.Printf("Successfully saved game with path: %s.\n", game.Name)
             }
-        }(path)
+        }(game)
     }
     wg.Wait()
 }
@@ -326,14 +320,6 @@ func main() {
     }
 
     config.Platform = strings.ToLower(config.Platform)
-
-
-    // Testing
-    games, err := readGamesDatabaseL(config.Platform)
-    if err != nil {
-        log.Fatal(err)
-    }
-    fmt.Println(games)
 
     // Start saving or restoring games
     saveGames(&config)

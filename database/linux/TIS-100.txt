@@ -1,4 +1,0 @@
-{
-    "libraryPathList": [""],
-    "constantPathList": ["~/.local/share/TIS-100/"]
-}
