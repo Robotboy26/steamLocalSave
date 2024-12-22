@@ -22,13 +22,16 @@ jobs:
         go-version: '1.20'
 
     - name: Build
-      run: go build -v ./src/
-
+      working-directory: ./src  # Set the working directory to `src/`
+      run: go build -v ./
+      
     - name: Test
-      run: go test -v ./src/
+      working-directory: ./src  # Set the working directory to `src/`
+      run: go test -v ./
 
     - name: Upload Go build
       uses: actions/upload-artifact@v4
       with:
-           name: Go-build-result
-           path: ./src/SteamLocalSave
+          name: Go-build-result
+          working-directory: ./src  # Set the working directory to `src/`
+          path: ./src/SteamLocalSave
