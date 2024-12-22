@@ -32,6 +32,6 @@ jobs:
     - name: Upload Go build
       uses: actions/upload-artifact@v4
       with:
-          name: Go-build-result
+          name: SteamLocalSave
           working-directory: ./src  # Set the working directory to `src/`
           path: ./src/SteamLocalSave
