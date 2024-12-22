@@ -241,18 +241,46 @@ func saveGame(steamLibrary, localLibrary, option string, maxBackups, uuid int, g
                 return false, err
             }
             if info.IsDir() {
+                // Check how many directories are inside the target directory.
+                // This is for if you have 2 games from one publisher in for example ~/.config/unity3d/publisher.
+                // You don't want to delete the data for both games.
+                entries, err := os.ReadDir(pathToDelete)
+                if err != nil {
+                    fmt.Println("Error reading directory:", err)
+                    continue
+                }
+
+                dirCount := 0
+                for _, entry := range entries {
+                    if entry.IsDir() {
+                        dirCount++
+                    }
+                }
+                if dirCount > 1 {
+                    pathToDelete = filepath.Join(pathToDelete, game.Name)
+                    // If the resulting path does not exist then the name of the subdirectory is not the games name and I don't want to do anything.
+                    // This will have to be rethough in the future to account for diffent paths and situations that might also change that paths that you want to delete.
+                    // IDEA: Make it step up one dir at a time if there is only one dir in the higher dir. For example step from ~/.config/unity3d/Publisher/Game to ~/.config/unity3d/Publisher if Game is the only dir in ~/.config/unity3d/Publisher
+                    _, err := os.Stat(pathToDelete)
+                    if os.IsNotExist(err) {
+                        return false, nil
+                    } else if err != nil {
+                        return false, err
+                    }
+                }
+
                 deleteDir(pathToDelete)
                 deletedSomething = true
+                }
             }
+            if deletedSomething {
+                return true, nil
+            }
+            return false, nil
         }
-        if deletedSomething {
-            return true, nil
-        }
-        return false, nil
+        optionError := errors.New("Option error, no operation was ran.")
+        return false, optionError
     }
-    optionError := errors.New("Option error, no operation was ran.")
-    return false, optionError
-}
 
 func saveGames(config *Config) {
     games, err := readGamesDatabase(config.Platform)
