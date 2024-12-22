@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.factorio"
+    ],
+    "deletePathList": [
+        "~/.factorio"
     ]
 }

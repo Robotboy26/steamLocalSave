@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.config/unity3d/Sauropod Studio/Castle Story"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/Sauropod Studio"
     ]
 }

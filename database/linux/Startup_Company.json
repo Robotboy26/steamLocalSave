@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.config/unity3d/2Awesome Partners/Startup Company/SaveFiles"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/2Awesome Partners"
     ]
 }

@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.local/share/aspyr-media/Sid Meier's Civilization VI"
+    ],
+    "deletePathList": [
+        "~/.local/share/aspyr-media"
     ]
 }

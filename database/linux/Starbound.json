@@ -1,5 +1,8 @@
 {
     "pathList": [
         "steamapps/common/Starbound/storage"
+    ],
+    "deletePathList": [
+        "steamapps/common/Starbound"
     ]
 }

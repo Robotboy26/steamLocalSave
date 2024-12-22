@@ -1,5 +1,8 @@
 {
     "pathList": [
-        "compatdata/1551360/pfx/drive_c/users/steamuser/AppData/Local/ForzaHorizon5/User_SteamLocalStorageDirectory/ConnectedStorage"
+        "steamapps/compatdata/1551360/pfx/drive_c/users/steamuser/AppData/Local/ForzaHorizon5/User_SteamLocalStorageDirectory/ConnectedStorage"
+    ],
+    "deletePathList": [
+        "steamapps/compatdata/1551360"
     ]
 }

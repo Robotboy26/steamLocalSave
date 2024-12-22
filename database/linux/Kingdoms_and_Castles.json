@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.config/unity3d/Lion Shield/Kingdoms and Castles/Saves"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/Lion Shield"
     ]
 }

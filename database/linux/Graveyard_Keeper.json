@@ -1,5 +1,8 @@
 {
     "pathList": [
-        "~/.config/unity3d/Lazy Bear Games/Graveyard Keeper/"
+        "~/.config/unity3d/Lazy Bear Games/Graveyard Keeper"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/Lazy Bear Games"
     ]
 }

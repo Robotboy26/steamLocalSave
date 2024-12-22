@@ -1,5 +1,8 @@
 {
     "pathList": [
-        "compatdata/686200/pfx/drive_c/users/steamuser/AppData/Local/KillHouseGames/ActionSquad"
+        "steamapps/compatdata/686200/pfx/drive_c/users/steamuser/AppData/Local/KillHouseGames/ActionSquad"
+    ],
+    "deletePathList": [
+        "steamapps/compatdata/686200"
     ]
 }

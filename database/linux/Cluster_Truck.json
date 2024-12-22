@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.config/unity3d/Landfall/Clustertruck"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/Landfall"
     ]
 }

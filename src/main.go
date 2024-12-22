@@ -17,12 +17,12 @@ import (
 type Game struct {
     Name             string
     PathList         []string `json:"pathList"`
+    DeletePathList   []string `json:"deletePathList"`
     srcList          []string
     foundLocation    string
     // fix targ
     targAuto         string
     targBackup       string
-    DeletePaths      []string `json:"deleteList"`
 }
 
 var debugMode bool
@@ -55,7 +55,7 @@ func generatePaths(steamLibrary, localLibrary, gameName string, savePaths []stri
         }
     }
     timeCombinationAuto := fmt.Sprintf("%s-auto", timeFormat())
-    timeCombinationBackup := fmt.Sprintf("%s-auto", timeFormat())
+    timeCombinationBackup := fmt.Sprintf("%s-backup", timeFormat())
     targetAuto := filepath.Join(localLibrary, gameName, timeCombinationAuto, gameName)
     targetBackup := filepath.Join(localLibrary, gameName, timeCombinationBackup, gameName)
     return srcList, targetAuto, targetBackup, nil
@@ -214,6 +214,7 @@ func saveGame(steamLibrary, localLibrary, option string, maxBackups, uuid int, g
         }
         latestBackup := filepath.Join(localLibrary, game.Name, zipFiles[len(zipFiles)-1])
         logDebug(fmt.Sprintf("Restoring from backup '%s' to game files", latestBackup))
+        // Make the directories to the location if they do not exists (The game could have been removed and uninstalled and just downloading it might not create the save location folders)
         err = unzipFile(latestBackup, game.foundLocation)
         if err != nil {
             return false, err
@@ -222,9 +223,17 @@ func saveGame(steamLibrary, localLibrary, option string, maxBackups, uuid int, g
     } else if option == "delete" {
         // TODO: add saftey to this
         // Create a backup first
-        performCopy(game.foundLocation, game.targAuto, false)
-        for x := 0; x < len(game.DeletePaths) - 1; x ++ {
-            pathToDelete := game.DeletePaths[x]
+        performCopy(game.foundLocation, game.targBackup, false)
+        err = deleteDir(game.targBackup)
+        if err != nil {
+            return false, err
+        }
+        if len(game.DeletePathList) == 0 {
+            return false, nil // There should be at least one path the is deleted
+        }
+        var deletedSomething bool
+        for x := 0; x < len(game.DeletePathList) - 1; x ++ {
+            pathToDelete := game.DeletePathList[x]
             info, err := os.Stat(pathToDelete)
             if os.IsNotExist(err) {
                 continue
@@ -233,8 +242,13 @@ func saveGame(steamLibrary, localLibrary, option string, maxBackups, uuid int, g
             }
             if info.IsDir() {
                 deleteDir(pathToDelete)
+                deletedSomething = true
             }
         }
+        if deletedSomething {
+            return true, nil
+        }
+        return false, nil
     }
     optionError := errors.New("Option error, no operation was ran.")
     return false, optionError
@@ -244,6 +258,10 @@ func saveGames(config *Config) {
     games, err := readGamesDatabase(config.Platform)
     if err != nil {
         log.Fatal(err)
+    }
+
+    if config.Select {
+        games = selectGames(games)
     }
 
     var wg sync.WaitGroup
@@ -257,7 +275,7 @@ func saveGames(config *Config) {
                 log.Printf("Error saving game for path: %s. Exception: %v\n", game, err)
             }
             if status {
-                fmt.Printf("Successfully saved game with path: %s.\n", game.Name)
+                fmt.Printf("Successfully %sd game with path: %s.\n", config.Mode, game.Name)
             }
         }(game)
     }
@@ -269,9 +287,10 @@ type Config struct {
     LocalLibrary     string `json:"localLibrary"`
     MaxBackups       int    `json:"maxBackups"`
     UUID             int    `json:"uuid"`
-    Mode             string `json:"mode"` // "save" or "restore"
+    Mode             string `json:"mode"` // "save" or "restore" or "delete"
     DebugMode        bool   `json:"debugMode"`
     Platform         string `json:"platform"`
+    Select           bool   `json:"select"`
 }
 
 func main() {

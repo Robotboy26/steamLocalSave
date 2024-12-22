@@ -1,5 +1,8 @@
 {
     "pathList": [
-        "~/.config/unity3d/Dodge Roll/Enter the Gungeon/"
+        "~/.config/unity3d/Dodge Roll/Enter the Gungeon"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/Dodge Roll"
     ]
 }

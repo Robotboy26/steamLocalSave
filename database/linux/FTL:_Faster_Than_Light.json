@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.local/share/FasterThanLight"
+    ],
+    "deletePathList": [
+        "~/.local/share/FasterThanLight"
     ]
 }

@@ -1,5 +1,8 @@
 {
     "pathList": [
         "steamapps/compatdata/206500/pfx/drive_c/users/steamuser/AppData/"
+    ],
+    "deletePathList": [
+        "steamapps/compatdata/206500"
     ]
 }

@@ -1,5 +1,8 @@
 {
     "pathList": [
-        "compatdata/521150/pfx/drive_c/users/steamuser/AppData/Local/Another Brick in the Mall"
+        "steamapps/compatdata/521150/pfx/drive_c/users/steamuser/AppData/Local/Another Brick in the Mall"
+    ],
+    "deletePathList": [
+        "steamapps/compatdata/521150"
     ]
 }

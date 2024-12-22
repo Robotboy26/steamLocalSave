@@ -1,5 +1,8 @@
 {
     "pathList": [
         "~/.config/unity3d/noio/KingdomTwoCrowns/Release"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/noio/KingdomTwoCrowns"
     ]
 }

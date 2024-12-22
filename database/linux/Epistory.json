@@ -1,5 +1,8 @@
 {
     "pathList": [
-        "~/.config/unity3d/Fishing Cactus/Epistory/"
+        "~/.config/unity3d/Fishing Cactus/Epistory"
+    ],
+    "deletePathList": [
+        "~/.config/unity3d/Fishing Cactus"
     ]
 }
