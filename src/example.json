@@ -3,7 +3,8 @@
     "localLibrary": "../SteamSaveLocal/",
     "maxBackups": 2,
     "uuid": 0,
-    "mode": "save",
+    "mode": "delete",
     "debugMode": false,
-    "platform": "linux"
+    "platform": "linux",
+    "select": false
 }

@@ -1,9 +1,13 @@
-Add deleting of save files because steam does not clean them up (Make backup when doing so)
-Add support for multiple steam library paths
 Add support for only saving some directories in a save dir
-Change database to be something of a json format and include more information, most of which to use during deleting save locations
 add a named saving feature that will not be auto deleted
-Refactor functions to use the struct with global config data and pass that through.
 Clearnup functions for higher readability
 Proper error handling not just error panic and make them more consistant
 Add proper testing of the codebase
+Add checksum creation during the performCopy operation because there is no need to create a new auto backup or a backup backup if the data is the same
+
+Done:
+
+Add deleting of save files because steam does not clean them up (Make backup when doing so)
+Add support for multiple steam library paths
+Change database to be something of a json format and include more information, most of which to use during deleting save locations
+Refactor functions to use the struct with global config data and pass that through.
