@@ -19,10 +19,19 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.20'
+        go-version: '1.23.x'
 
     - name: Build
-      run: go build -v ./...
-
+      working-directory: ./src  # Set the working directory to `src/`
+      run: go build -v ./
+      
     - name: Test
-      run: go test -v ./...
+      working-directory: ./src  # Set the working directory to `src/`
+      run: go test -v ./
+
+    - name: Upload Go build
+      uses: actions/upload-artifact@v4
+      with:
+          name: SteamLocalSave
+          working-directory: ./src  # Set the working directory to `src/`
+          path: ./src/SteamLocalSave
