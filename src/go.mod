@@ -1,4 +1,4 @@
-module SteamLocalSave
+module steamLocalSave
 
 go 1.23.4
 

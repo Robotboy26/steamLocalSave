@@ -2,4 +2,4 @@ SteamSaveLocal/
 SavePathDataset-Linux.txt.backup
 SavePathDataset*Debug.txt
 src/config.json
-src/SteamLocalSave
+src/steamLocalSave
