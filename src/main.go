@@ -1,15 +1,16 @@
 package main
 
 import (
-    // "bufio"
     "encoding/json"
     "fmt"
+	"io"
     "log"
     "os"
     "path/filepath"
     "strings"
     "sync"
     "time"
+	"flag"
     "errors"
 )
 
@@ -25,12 +26,135 @@ type Game struct {
     targBackup       string
 }
 
-var debugMode bool
 
-func logDebug(message string) {
-    if debugMode {
-        fmt.Println(message)
+type Config struct {
+    SteamLibraryPath string `json:"steamLibraryPath"`
+    LocalSaveLocation string `json:"localSaveLocation"`
+    MaxBackups int `json:"maxBackups"`
+    UUID string `json:"uuid"`
+    Mode string `json:"mode"` // Valid modes: "save" or "restore" or "delete" or "cleanup"
+    Platform string `json:"platform"`
+    // Select bool `json:"select"`
+	DryRun bool `json:"dryRun"`
+}
+
+// TODO: error need much improvment for the different modes
+func main() {
+	// Command line arguments
+	var configPath = flag.String("c", "config.json", "Program settings in a json file.")
+	var steamLibraryPath = flag.String("l", "", "The path to your Steam installation.")
+	var localSaveLocation = flag.String("s", "SteamSaveLocal/", "The location to backup or restore from.")
+	var maxBackups = flag.Int("b", 3, "The max amount of backups to make for a game")
+	var UUID = flag.String("uuid", "", "Your Steam profile UUID. This is used for some steam games that store save files under a directory that is your steamUUID.")
+	var mode = flag.String("m", "save", "Avalable modes are (Case does not matter): save, restore, delete, and cleanup.")
+	var platform = flag.String("p", "linux", "Set this to the operating system you are using. Ex. Linux.")
+	// var  = flag.Bool("select", false, "If you would like to manually select games to save, restore, delete, or cleanup select this option.")
+	var dryRun = flag.Bool("dry", false, "Run the program without copying any files.")
+
+	flag.Parse()
+
+	fmt.Printf("%t\n", *dryRun)
+
+	var config Config
+
+	config.SteamLibraryPath = *steamLibraryPath
+	config.LocalSaveLocation = *localSaveLocation
+	config.MaxBackups = *maxBackups
+	config.UUID = *UUID
+	config.Mode = strings.ToLower(*mode)
+	config.Platform = strings.ToLower(*platform)
+	// config.Select = *select
+	config.DryRun = *dryRun
+
+    // Read the JSON config file
+	// Values in a JSON file will overwrite flags
+	if configFile, err := os.Open(*configPath); err == nil {
+		// File exists
+		data, err := io.ReadAll(configFile)
+		if err != nil {
+			log.Fatalf("Error reading config file: %v", err)
+		}
+
+		err = json.Unmarshal(data, &config)
+		if err != nil {
+			log.Fatalf("Error decoding config file: %v", err)
+		}
+
+	} else if errors.Is(err, os.ErrNotExist) {
+		// File does not exist
+	} else {
+        log.Fatalf("Error reading config file: %v", err)
+
+	}
+
+	fmt.Printf("Config from file: %v\n", config)
+
+	if config.SteamLibraryPath == "" {
+		log.Fatal("You need to input a Steam Library Path. Use -l or set it in a config file.")
+	}
+
+	// Make Steam library path is formatted correctly
+    // Ensure trailing slashes on paths
+    if !strings.HasSuffix(config.SteamLibraryPath, "/") {
+        config.SteamLibraryPath = fmt.Sprintf("%s/", config.SteamLibraryPath) 
     }
+
+    if strings.HasPrefix(config.SteamLibraryPath, "~") {
+        homeDir, err := os.UserHomeDir()
+        if err != nil {
+			fmt.Println("Failed to get Home Dir.")
+            log.Fatal(err)
+        }
+        config.SteamLibraryPath = filepath.Join(homeDir, strings.TrimPrefix(config.SteamLibraryPath, "~"))
+    }
+
+	if !strings.HasSuffix(config.LocalSaveLocation, "/") {
+        config.LocalSaveLocation = fmt.Sprintf("%s/", config.LocalSaveLocation) 
+    }
+
+    // Make sure the local library directory exists
+    if _, err := os.Stat(config.LocalSaveLocation); os.IsNotExist(err) {
+        err = os.Mkdir(config.LocalSaveLocation, 0755)
+        if err != nil {
+            log.Fatal(err)
+        }
+    }
+
+	config.Mode = strings.ToLower(config.Mode)
+	if config.Mode != "save" && config.Mode != "restore" && config.Mode != "delete" && config.Mode != "cleanup"{
+		config.Mode = "save"
+	}
+
+    config.Platform = strings.ToLower(config.Platform)
+	if config.Platform != "linux" {
+		log.Fatalf("Your selected platform '%s' is not currently supported!\n", config.Platform)
+	}
+	// Continue
+
+    games, err := readGamesDatabase(config.Platform)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // if config.Select {
+    //     games = selectGames(games)
+    // }
+
+	// Add a max threads to use in this waitGroup
+    var wg sync.WaitGroup
+    for _, game := range games {
+        wg.Add(1)
+        go func(game Game) {
+            defer wg.Done()
+            err := saveGame(&config, game)
+            if err != nil {
+                // log.Printf("Error saving game for path: '%s'. Exception: %v\n", game, err)
+            } else {
+				// fmt.Printf("Successfully %sd game with path: '%s'.\n", config.Mode, game.Name)
+			}
+        } (game)
+    }
+    wg.Wait()
 }
 
 func timeFormat() string {
@@ -39,6 +163,7 @@ func timeFormat() string {
     return formattedTime
 }
 
+// This could likely be cleaned or split up
 func generatePaths(steamLibrary, localLibrary, gameName string, savePaths []string) ([]string, string, string, error) {
     var srcList []string
     for _, path := range savePaths {
@@ -61,35 +186,17 @@ func generatePaths(steamLibrary, localLibrary, gameName string, savePaths []stri
     return srcList, targetAuto, targetBackup, nil
 }
 
-func performCopy(src string, targ string, dryRun bool) error {
-    if !dryRun {
-        err := os.MkdirAll(filepath.Dir(targ), 0755)
-        if err != nil {
-            return err
-        }
-        err = copyDir(src, targ)
-        if err != nil {
-            return err
-        }
-        err = createZip(targ)
-        if err != nil {
-            return err
-        }
-
-        return nil
-    }
-    return nil
-}
-
 func cleanupOldBackups(localLibrary string, gameName string, maxBackups int) error {
     backups, err := getAutoBackupFiles(localLibrary, gameName)
     if err != nil {
         return err
     }
 
-    for i := 0; i < len(backups)-maxBackups; i++ {
+	fmt.Printf("There are currently %d backups for the game '%s'\n", len(backups), gameName)
+
+    for i := 0; i < len(backups) - maxBackups; i++ {
         oldestBackup := filepath.Join(localLibrary, gameName, backups[i])
-        logDebug(fmt.Sprintf("Removing the oldest backup: %s", oldestBackup))
+		fmt.Printf("Removing the oldest backup: '%s'\n", oldestBackup)
         if err := os.RemoveAll(oldestBackup); err != nil {
             return err
         }
@@ -105,6 +212,20 @@ func getAutoBackupFiles(localLibrary string, gameName string) ([]string, error) 
     var backups []string
     for _, file := range files {
         if strings.HasSuffix(file.Name(), "auto") {
+            backups = append(backups, file.Name())
+        }
+    }
+    return backups, nil
+}
+
+func getBackupBackupFiles(localLibrary string, gameName string) ([]string, error) {
+    files, err := os.ReadDir(filepath.Join(localLibrary, gameName))
+    if err != nil {
+        return nil, err
+    }
+    var backups []string
+    for _, file := range files {
+        if strings.HasSuffix(file.Name(), "backup") {
             backups = append(backups, file.Name())
         }
     }
@@ -136,12 +257,12 @@ func readGamesDatabase(platform string) ([]Game, error) {
             filePath := filepath.Join(dbDir, file.Name())
             gameData, err := os.ReadFile(filePath)
             if err != nil {
-                return nil, fmt.Errorf("Error reading config file: %v", err)
+                return nil, fmt.Errorf("Error reading config file from game '%s' : %v", game.Name, err)
             }
 
             err = json.Unmarshal(gameData, &game)
             if err != nil {
-                return nil, fmt.Errorf("Error decoding config file: %v", err)
+                return nil, fmt.Errorf("Error decoding config file from game '%s' : %v", game.Name, err)
             }
             games = append(games, game)
         }
@@ -150,7 +271,8 @@ func readGamesDatabase(platform string) ([]Game, error) {
     return games, nil
 }
 
-func findGame(steamLibrary, localLibrary string, uuid int, game Game) (Game, bool, error) {
+func findGame(steamLibrary, localLibrary string, uuid string, game Game) (Game, bool, error) {
+	// Fix this by a little bit.
     var err error
     game.srcList, game.targAuto, game.targBackup, err = generatePaths(steamLibrary, localLibrary, game.Name, game.PathList)
     if err != nil {
@@ -161,8 +283,8 @@ func findGame(steamLibrary, localLibrary string, uuid int, game Game) (Game, boo
 
     // Add uuid to src paths
     for _, src := range game.srcList {
-        if uuid != 0 && strings.Contains(src, ";") {
-            src = strings.ReplaceAll(src, ";", fmt.Sprintf("%d", uuid))
+        if strings.Contains(src, ";") {
+            src = strings.ReplaceAll(src, ";", fmt.Sprintf("%s", uuid))
         }
         _, err := os.Stat(src)
         if os.IsNotExist(err) {
@@ -181,91 +303,108 @@ func findGame(steamLibrary, localLibrary string, uuid int, game Game) (Game, boo
     }
 }
 
-func saveGame(steamLibrary, localLibrary, option string, maxBackups, uuid int, game Game) (bool, error) {
-    game, foundGame, err := findGame(steamLibrary, localLibrary, uuid, game)
+func saveGame(config *Config, game Game) error {
+    game, foundGame, err := findGame(config.SteamLibraryPath, config.LocalSaveLocation, config.UUID, game)
     if err != nil {
-        return false, err
+        return err
     }
     if !foundGame {
-        return false, nil
+        // return errors.New(fmt.Sprintf("Could not find game '%s.'", game.Name))
+		return nil // Do not say anything when a game is not found
     }
 
-    if option == "save" {
+	// Change to a switch statment
+    if config.Mode == "save" {
         fmt.Printf("Saving game files for '%s'\n", game.Name)
-        err := performCopy(game.foundLocation, game.targAuto, false)
+        err := performCopyAndZip(game.foundLocation, game.targAuto, false)
         if err != nil {
-            return false, err
+            return err
         }
-        err = deleteDir(game.targAuto)
+        fmt.Printf("Saved game files for '%s'\n", game.Name)
+        err = cleanupOldBackups(config.LocalSaveLocation, game.Name, config.MaxBackups)
         if err != nil {
-            return false, err
+            return err
         }
-        err = cleanupOldBackups(localLibrary, game.Name, maxBackups)
-        if err != nil {
-            return false, err
-        }
-        return true, nil
-    } else if option == "restore" {
+        return nil
+    } else if config.Mode == "restore" {
         // Create a backup first
-        performCopy(game.foundLocation, game.targBackup, false)
-        zipFiles, err := getAutoBackupFiles(localLibrary, game.Name)
-        if err != nil || len(zipFiles) == 0 {
-            return true, nil
+        zipFiles, err := getAutoBackupFiles(config.LocalSaveLocation, game.Name)
+		fmt.Println(zipFiles)
+		if err != nil {
+			return err
+		}
+        if len(zipFiles) == 0 {
+			return errors.New("There are no saves to restore from, please run this program in save mode or rename a -backup save to -auto.")
         }
-        latestBackup := filepath.Join(localLibrary, game.Name, zipFiles[len(zipFiles)-1])
-        logDebug(fmt.Sprintf("Restoring from backup '%s' to game files", latestBackup))
+        performCopyAndZip(game.foundLocation, game.targBackup, false)
+        fmt.Printf("Backed up game files for '%s'\n", game.Name)
+		latestBackup := fmt.Sprintf("%s/%s.zip", filepath.Join(config.LocalSaveLocation, game.Name, zipFiles[len(zipFiles) - 1]), game.Name)
         // Make the directories to the location if they do not exists (The game could have been removed and uninstalled and just downloading it might not create the save location folders)
+        err = deleteDir(game.foundLocation) // Delete the save dir after saveing but before loading it from an old save
+        if err != nil {
+            return err
+        }
         err = unzipFile(latestBackup, game.foundLocation)
         if err != nil {
-            return false, err
+            return err
         }
-        return true, nil
-    } else if option == "delete" {
+        fmt.Printf("Restoring from backup '%s' to game files\n", latestBackup)
+        return nil
+    } else if config.Mode == "delete" {
+		// log.Fatal("delete is not avalible at this time.")
         // TODO: add saftey to this
         // Create a backup first
-        performCopy(game.foundLocation, game.targBackup, false)
+        performCopyAndZip(game.foundLocation, game.targBackup, false)
+        fmt.Printf("Backed up game files for '%s'\n", game.Name)
         err = deleteDir(game.targBackup)
         if err != nil {
-            return false, err
+            return err
         }
+		var deletePaths []string
         if len(game.DeletePathList) == 0 {
-            return false, nil // There should be at least one path to be deleted, otherwise don't try to delete anything.
-        }
+			deletePaths = append(deletePaths, game.foundLocation)
+            // return errors.New("There is no delete path, please edit to database file to fix this.")
+        } else {
+			deletePaths = game.DeletePathList
+		}
         // We already know that game.foundLocation exists and is a dir
-        // However I want support for deleting from multiple paths
+        // But I also want support for deleting from multiple paths
         var deletedSomething bool
-        for x := 0; x < len(game.DeletePathList) - 1; x ++ {
-            pathToDelete := game.DeletePathList[x]
+        for x := 0; x < len(deletePaths); x ++ {
+			var pathToDelete string
+			if strings.HasPrefix(deletePaths[x], "~") {
+				homeDir, err := os.UserHomeDir()
+				if err != nil {
+					return err
+				}
+				pathToDelete = fmt.Sprintf("%s%s", homeDir, strings.TrimPrefix(deletePaths[x], "~"))
+			} else {
+				pathToDelete = deletePaths[x]
+			}
+			fmt.Printf("Starting to delete path '%s'\n", pathToDelete)
             info, err := os.Stat(pathToDelete)
-            if os.IsNotExist(err) {
+			if errors.Is(err, os.ErrNotExist) {
+				fmt.Println("Save data path does not exist!")
                 continue
             } else if err != nil {
-                return false, err
+                return err
             }
-            // If the resulting path does not exist then the name of the subdirectory is not the games name and I don't want to do anything.
-            // This will have to be rethough in the future to account for diffent paths and situations that might also change that paths that you want to delete.
-            // IDEA: Make it step up one dir at a time if there is only one dir in the higher dir. For example step from ~/.config/unity3d/Publisher/Game to ~/.config/unity3d/Publisher if Game is the only dir in ~/.config/unity3d/Publisher
             if info.IsDir() {
-                // Check how many directories are inside the target directory.
-                // This is for if you have 2 games from one publisher in for example ~/.config/unity3d/publisher.
-                // You don't want to delete the data for both games.
-
-                // Step back as far as there is still only one dir in the resulting dir
-                var newPath string
+				// Step back from the save data location one directory at a time to delete the farthest back path that will still not delete any unwanted data.
+                var dirPath string
+				dirPath = pathToDelete
+				// Step back one dir at a time
                 for {
-                    // First step back one dir
-                    i := 0
-                    for {
-                        if pathToDelete[len(pathToDelete) - 1] == byte("/"[0]) {
-                            newPath = pathToDelete[:i]
+					for i := 1; i < len(dirPath); i++ {
+                        if dirPath[len(dirPath) - i] == byte("/"[0]) {
+                            dirPath = dirPath[0: len(dirPath) - i]
                             break
                         }
                     }
-                    log.Fatal(fmt.Sprintf("PathToDelete: '%s'\nnewPath: '%s'", pathToDelete, newPath))
-                    // Check how many dirs are in the 
-                    entries, err := os.ReadDir(pathToDelete)
+                    // Check how many dirs are in the path to delete
+                    entries, err := os.ReadDir(dirPath)
                     if err != nil {
-                        return false, err
+                        return err
                     }
 
                     dirCount := 0
@@ -274,110 +413,56 @@ func saveGame(steamLibrary, localLibrary, option string, maxBackups, uuid int, g
                             dirCount++
                         }
                     }
-                    if dirCount != 1 {
-                        // Delete from the path before steping back a dir
-                        deleteDir(pathToDelete)
+                    if dirCount < 2 {
+						// Only delete that path if there is only one or less subdirectorys
+						fmt.Printf("Deleted dir '%s'\n", dirPath)
+                        deleteDir(dirPath)
                         deletedSomething = true
-                    }
+                    } else {
+						fmt.Printf("Dir '%s' has more than 1 subdirectory\n", dirPath)
+						fmt.Printf("Deleted dir '%s'\n", pathToDelete)
+						deleteDir(pathToDelete)
+						break
+					}
                 }
             }
         }
         if deletedSomething {
-            return true, nil
+            return nil
         } else {
-            return false, nil
+            return errors.New("There was some kind of problem during the delete function that caused nothing to be delete. This is weird because it should have errored somewhere else.")
         }
-    }
-    optionError := errors.New("Option error, no operation was ran.")
-    return false, optionError
-}
+    } else if config.Mode == "cleanup" {
+		//       autoBackups, err := getAutoBackupFiles(config.LocalSaveLocation, game.Name)
+		// if err != nil {
+		// 	return err
+		// }
+		// latestAutoBackup := autoBackups[len(autoBackups) - 1]
+		// for i := 0; i < len(autoBackups); i++ {
+		// 	if autoBackups[i] != latestAutoBackup {
+		// 		fmt.Printf("Deleted '%s'\n", autoBackups[i])
+		// 		deleteDir(filepath.Join(config.LocalSaveLocation, game.Name, autoBackups[i]))
+		// 	}
+		// }
 
-func saveGames(config *Config) {
-    games, err := readGamesDatabase(config.Platform)
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    if config.Select {
-        games = selectGames(games)
-    }
-
-    var wg sync.WaitGroup
-    for _, game := range games {
-        wg.Add(1)
-        go func(game Game) {
-            defer wg.Done()
-            // TODO: when changing this to use config use a copy of config not a pointer to it as too not accidently change a global value in a unwanted way
-            status, err := saveGame(config.SteamLibraryPath, config.LocalLibrary, config.Mode, config.MaxBackups, config.UUID, game)
-            if err != nil {
-                log.Printf("Error saving game for path: %s. Exception: %v\n", game, err)
-            }
-            if status {
-                fmt.Printf("Successfully %sd game with path: %s.\n", config.Mode, game.Name)
-            }
-        }(game)
-    }
-    wg.Wait()
-}
-
-type Config struct {
-    SteamLibraryPath string `json:"steamLibraryPath"`
-    LocalLibrary     string `json:"localLibrary"`
-    MaxBackups       int    `json:"maxBackups"`
-    UUID             int    `json:"uuid"`
-    Mode             string `json:"mode"` // "save" or "restore" or "delete"
-    DebugMode        bool   `json:"debugMode"`
-    Platform         string `json:"platform"`
-    Select           bool   `json:"select"`
-}
-
-func main() {
-    // Read the JSON config file
-    configFile := "config.json"
-    data, err := os.ReadFile(configFile)
-    if err != nil {
-        log.Fatalf("Error reading config file: %v", err)
-    }
-
-    var config Config
-    err = json.Unmarshal(data, &config)
-    if err != nil {
-        log.Fatalf("Error decoding config file: %v", err)
-    }
-
-    debugMode = config.DebugMode
-    if debugMode {
-        logDebug(fmt.Sprintf("Configuration: %+v", config))
-    }
-
-    // Ensure trailing slashes on paths
-    if !strings.HasSuffix(config.SteamLibraryPath, "/") {
-        config.SteamLibraryPath += "/"
-    }
-    if strings.HasPrefix(config.SteamLibraryPath, "~") {
-        homeDir, err := os.UserHomeDir()
+		// Keep max backups auto backups
+        err = cleanupOldBackups(config.LocalSaveLocation, game.Name, config.MaxBackups)
         if err != nil {
-            log.Fatal(err)
+            return err
         }
-        config.SteamLibraryPath = filepath.Join(homeDir, strings.TrimPrefix(config.SteamLibraryPath, "~"))
-    }
 
-    if config.LocalLibrary == "" {
-        config.LocalLibrary = "../SteamSaveLocal/"
-    } else if !strings.HasSuffix(config.LocalLibrary, "/") {
-        config.LocalLibrary += "/"
-    }
-
-    // Make sure the local library directory exists
-    if _, err := os.Stat(config.LocalLibrary); os.IsNotExist(err) {
-        err = os.Mkdir(config.LocalLibrary, 0755)
-        if err != nil {
-            log.Fatal(err)
-        }
-    }
-
-    config.Platform = strings.ToLower(config.Platform)
-
-    // Start saving or restoring games
-    saveGames(&config)
+		backupBackups, err := getBackupBackupFiles(config.LocalSaveLocation, game.Name)
+		if err != nil {
+			return err
+		}
+		latestBackupBackup := backupBackups[len(backupBackups) - 1]
+		for i := 0; i < len(backupBackups); i++ {
+			if backupBackups[i] != latestBackupBackup {
+				fmt.Printf("Deleted '%s'\n", backupBackups[i])
+				deleteDir(filepath.Join(config.LocalSaveLocation, game.Name, backupBackups[i]))
+			}
+		}
+		return nil
+	}
+    return errors.New("Option error, no operation was ran.")
 }

@@ -1,10 +1,9 @@
 {
     "steamLibraryPath": "~/.steam/steam",
-    "localLibrary": "../SteamSaveLocal/",
+    "localSaveLocation": "../SteamSaveLocal/",
     "maxBackups": 2,
-    "uuid": 0,
+    "uuid": "0",
     "mode": "delete",
-    "debugMode": false,
     "platform": "linux",
     "select": false
 }

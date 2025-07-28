@@ -1,8 +1,5 @@
 {
     "pathList": [
         "~/.config/unity3d/IronGate/Valheim"
-    ],
-    "deletePathList": [
-        "~/.config/unity3d/IronGate"
     ]
 }

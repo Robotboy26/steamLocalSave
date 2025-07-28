@@ -1,8 +1,5 @@
 {
     "pathList": [
         "~/.local/share/TIS-100"
-    ],
-    "deletePathList": [
-        "~/.local/share/TIS-100"
     ]
 }

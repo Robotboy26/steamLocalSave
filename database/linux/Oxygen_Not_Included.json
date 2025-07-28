@@ -1,8 +1,5 @@
 {
     "pathList": [
         "~/.config/unity3d/Klei/Oxygen Not Included"
-    ],
-    "deletePathList": [
-        "~/.config/unity3d/Klei"
     ]
 }

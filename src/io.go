@@ -4,8 +4,32 @@ import (
     "os"
     "io"
     "path/filepath"
-    "fmt"
+	"log"
 )
+
+func performCopyAndZip(src string, targ string, dryRun bool) error {
+    if !dryRun {
+        err := os.MkdirAll(filepath.Dir(targ), 0755)
+        if err != nil {
+            return err
+        }
+        err = copyDir(src, targ)
+        if err != nil {
+            return err
+        }
+        err = createZip(targ)
+        if err != nil {
+            return err
+        }
+		// Delete the folder once the zip file is created by performCopy.
+        err = deleteDir(targ)
+        if err != nil {
+            return err
+        }
+        return nil
+    }
+    return nil
+}
 
 func copyFile(srcFile string, dstFile string) error {
     src, err := os.Open(srcFile)
@@ -47,7 +71,8 @@ func copyDir(src string, dst string) error {
 
 func deleteDir(path string) error {
     if err := os.RemoveAll(path); err != nil {
-        return fmt.Errorf("failed to delete directory %s: %v", path, err)
+		log.Fatalf("failed to delete directory %s: %v", path, err)
+        return err
     }
     return nil
 }

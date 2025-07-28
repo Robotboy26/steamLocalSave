@@ -1,8 +1,5 @@
 {
     "pathList": [
-        "~/.config/unity3d/ProjectorGames/FortressCraft/Worlds"
-    ],
-    "deletePathList": [
-        "~/.config/unity3d/ProjectorGames"
+        "~/.config/unity3d/ProjectorGames/FortressCraft"
     ]
 }
